@@ -6,6 +6,8 @@ import mongoose from 'mongoose';
 import departRouter from './routes/departRoute';
 import authRouter from './routes/authRoute';
 
+import roleRouter from './routes/roleRoute';
+
  dotenv.config();
 // initialize express
 
@@ -31,6 +33,10 @@ app.use('/api/department',departRouter);
 
 app.use('/api/auth', authRouter);
 
+
+//role routes
+
+app.use('/api/role', roleRouter);
 
 
 // Retrieve the MongoDB URI from environment variables
