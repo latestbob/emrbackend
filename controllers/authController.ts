@@ -47,8 +47,11 @@ export async function registerUser(req:Request<{}, {}, UserInterface>, res:Respo
 
         const hashedPassword = await bcrypt.hash(password,10);
 
+        const uuid:string =  Math.random().toString(36).substring(2, 8).toLowerCase();
+      
+
         const newUser = new userModel({
-            firstname, lastname, email, phone, office, office_uuid, role, position, department, password:hashedPassword
+            firstname, lastname, email, phone, office, office_uuid, role, position, department, password:hashedPassword, uuid:uuid
         });
 
         await newUser.save();

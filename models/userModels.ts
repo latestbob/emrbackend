@@ -87,6 +87,12 @@ const UserSchema = new Schema<IUser>({
         default: null,
     },
 
+    uuid : {
+        type : String,
+        required : false,
+        default: null,
+    },
+
    isActive : {
         type : Boolean,
         required : false,
