@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { createRole } from '../controllers/roleController';
 
+import { validateRole } from '../middlewares/validateRole';
+import { getRole, deleteRole } from '../controllers/roleController';
 
 
 
@@ -9,19 +11,15 @@ const roleRouter = Router ();
 
 //create role
 
-roleRouter.post('/create', createRole); //sudo admin
+roleRouter.post('/create', validateRole, createRole); //sudo admin
 
-//get departments in an office
+//get all role in an office
 
-// departRouter.get('/office/:uuid', getDepartments); 
+roleRouter.get('/:office_uuid', getRole);
 
-// //update department   //sudo admin
+//delete Role
 
-// departRouter.put('/:id',updateMiddleware, updateDepartment);
-
-// //delete department // sudo admin
-
-// departRouter.delete("/:id", deleteDepartment);
+roleRouter.delete('/:id', deleteRole);  // middleware super admin
 
 
 
