@@ -102,7 +102,7 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
 
         //check user password
 
-        const isMatched = bcrypt.compare(password, user.password);
+        const isMatched = await bcrypt.compare(password, user.password);
         if(!isMatched){
             return res.status(400).json({
                 status:"failed",
