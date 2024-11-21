@@ -111,7 +111,7 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
         }
 
         // Create a token
-        const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET as string, { expiresIn: '8h' });
 
        
 
