@@ -25,7 +25,7 @@ export async function registerUser(req:Request<{}, {}, UserInterface>, res:Respo
         });
     }
         
-      const {firstname, lastname, email, phone, office, office_uuid, role, position, department, password} = req.body;
+      const {firstname, lastname, email, phone, office, office_uuid, role, position, department, password, dob, gender, address} = req.body;
     try {
         const existedUser = await userModel.findOne({email});
 
@@ -53,7 +53,7 @@ export async function registerUser(req:Request<{}, {}, UserInterface>, res:Respo
       
 
         const newUser = new userModel({
-            firstname, lastname, email, phone, office, office_uuid, role, position, department, password:hashedPassword, uuid:uuid
+            firstname, lastname, email, phone, office, office_uuid, role, position, department, password:hashedPassword, uuid:uuid, gender, dob, address
         });
 
         await newUser.save();

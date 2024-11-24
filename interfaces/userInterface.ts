@@ -16,7 +16,10 @@ export interface UserInterface {
     position?:string | null;
     isActive?:boolean;
     password:string;
+    dob?:string | null;
+    gender?:string | null;
     createdAt?:Date;
     updatedAt?:Date | null;
+   
     
 }

@@ -14,7 +14,7 @@ export const validateRegiseter = [
     .matches(/^(?:\+?234|0)?[1-9]\d{9,14}$/).withMessage('Phone number must be a valid international phone number'),
 
     body('office').isString().withMessage("office must be a string").notEmpty().withMessage("Office is required"),
-    body('uuid').optional().isString().withMessage("uuid must be a string"),
+    body('gender').isString().withMessage("gender must be a string").notEmpty().withMessage("Gender is required"),    body('uuid').optional().isString().withMessage("uuid must be a string"),
     body('role').isString().withMessage("role must be a string").withMessage("Role is required"),
     body('department').optional().isString().withMessage("department must be a string"),
     body('position').optional().isString().withMessage("position must be a string"),
