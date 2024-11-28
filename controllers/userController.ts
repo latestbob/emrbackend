@@ -79,3 +79,67 @@ export async function changePassword(req:Request<{},{}, UserInterface>, res:Resp
     }
 
 }
+
+
+
+export async function getNonClinicalStaff(req:Request<{},{}, UserInterface>, res:Response){
+
+  
+
+
+    try {
+
+        const nonclinical = await userModel.find({
+            role: { $nin: ['Doctor', 'Nurse'] }
+          });
+
+        
+
+
+        return res.status(200).json({
+            status :"success",
+            nonclinicalstaff:nonclinical,
+        });
+
+        
+    } catch (error:any) {
+        console.error(error);
+    }
+
+}
+
+
+//get Unique User by uuid
+
+
+export async function getUniqueUser(req:Request<{uuid:string},{}, UserInterface>, res:Response){
+
+    const uuid = req.params.uuid;
+ 
+
+    try {
+
+        //
+
+        const existed = await userModel.findOne({uuid});
+
+        if(!existed){
+            return res.status(400).json({
+                "status":"failed",
+                "message":"User not found"
+            });
+        }
+        
+
+
+        return res.status(200).json({
+            status :"success",
+            user : existed
+        });
+
+        
+    } catch (error:any) {
+        console.error(error);
+    }
+
+}
