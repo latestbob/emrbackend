@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import isAuthenticated from '../middlewares/authenticated';
-import { changePassword, getNonClinicalStaff, getUniqueUser, updateProfile } from '../controllers/userController';
+import { changePassword, getNonClinicalStaff, getUniqueUser, updateProfile, updateUniqueUser } from '../controllers/userController';
 import { validateChangePassword } from '../middlewares/userMiddleware';
 import isAdmin from '../middlewares/adminMiddleware';
 
@@ -30,6 +30,6 @@ userRouter.get("/unique/:uuid", isAuthenticated, isAdmin, getUniqueUser);
 
 
 //update user, this is for admin or support admin
-
+userRouter.put("/unique/update", isAuthenticated, isAdmin, updateUniqueUser);
 
 export default userRouter;

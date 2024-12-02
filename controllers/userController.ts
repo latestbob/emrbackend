@@ -143,3 +143,57 @@ export async function getUniqueUser(req:Request<{uuid:string},{}, UserInterface>
     }
 
 }
+
+//update unique user (action by admin and super admin)
+
+export async function updateUniqueUser(req:Request<{}, {}, UserInterface>, res:Response){
+
+
+    // validate input
+
+    // const errors = validationResult(req);
+
+    // if(!errors.isEmpty()){
+    //     return res.status(400).json({
+    //         "status":"failed",
+    //         "error":errors.array(),
+    //     });
+    // }
+        
+    const {firstname, lastname, email, phone, uuid, role, department, dob, gender, address} = req.body;
+    try {
+        const user = await userModel.findOne({uuid});
+
+        if(!user){
+            return res.status(400).json({
+                status:"failed",
+                error:"user  not registered"
+            });
+        }
+
+        
+
+
+    // Update only the provided fields in req.body
+    const updatedUser = await userModel.findOneAndUpdate(
+        { uuid },
+        { $set: req.body },
+        { new: true, runValidators: true } // new: return the updated user; runValidators: enforce schema validation
+    );
+
+    return res.status(200).json({
+        status: "success",
+        message: "User updated successfully",
+        data: updatedUser
+    });
+
+      
+
+   
+
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+
