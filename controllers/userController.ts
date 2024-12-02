@@ -197,3 +197,61 @@ export async function updateUniqueUser(req:Request<{}, {}, UserInterface>, res:R
 
 }
 
+
+
+
+//change unique user password
+
+
+export async function changeUniquePassword(req:Request<{uuid:string}, {}, UserInterface>, res:Response){
+
+
+
+    const uuid = req.params.uuid;
+ 
+
+        
+      const {password} = req.body;
+
+    try {
+
+
+        if(!password){
+            return res.status(400).json({
+                status:"failed",
+                error:"Password is required"
+            });
+        }
+    
+
+        const user = await userModel.findOne({uuid});
+
+        if(!user){
+            return res.status(400).json({
+                status:"failed",
+                error:"user  not registered"
+            });
+        }
+
+        
+        
+        const hashedPassword = await bcrypt.hash(password,10);
+
+      user.password = hashedPassword;
+
+      await user.save();
+
+
+        //send notification to user
+
+        return res.status(200).json({
+            status:"success",
+            message:"User Password updated successfully"
+        });
+
+
+    } catch (error) {
+        console.error(error);
+    }
+
+}
