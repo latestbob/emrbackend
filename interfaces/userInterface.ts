@@ -17,6 +17,8 @@ export interface UserInterface {
     isActive?:boolean;
     password:string;
     dob?:string | null;
+    aos?:string | null;
+    fee?:number | null;
     gender?:string | null;
     createdAt?:Date;
     updatedAt?:Date | null;

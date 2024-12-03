@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import isAuthenticated from '../middlewares/authenticated';
-import { changePassword, getNonClinicalStaff, getUniqueUser, updateProfile, updateUniqueUser, changeUniquePassword } from '../controllers/userController';
+import { changePassword, getNonClinicalStaff, getUniqueUser, updateProfile, updateUniqueUser, changeUniquePassword, getClinicalStaff } from '../controllers/userController';
 import { validateChangePassword } from '../middlewares/userMiddleware';
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
@@ -19,11 +19,14 @@ userRouter.put('/profile', isAuthenticated, updateProfile);
 userRouter.put('/changepassword', isAuthenticated, changePassword);
 
 
-//get all users that are not doctors or nurse
+//get all users that are not doctors or nurse or clinical staff
 
 //
 
 userRouter.get("/nonclincalstaff", getNonClinicalStaff)
+
+userRouter.get("/clinicalstaff", getClinicalStaff)
+
 
 //get unique user staff by uuid
 
