@@ -90,7 +90,7 @@ export async function getNonClinicalStaff(req:Request<{},{}, UserInterface>, res
     try {
 
         const nonclinical = await userModel.find({
-            role: { $nin: ['Doctor', 'Nurse'] }
+            role: { $nin: ['Doctor', 'Nurse', 'Pharmacist', 'Lab Technician', 'Radiologist'] }
           });
 
         
@@ -107,6 +107,37 @@ export async function getNonClinicalStaff(req:Request<{},{}, UserInterface>, res
     }
 
 }
+
+
+//get alll clinicial staff
+
+
+export async function getClinicalStaff(req:Request<{},{}, UserInterface>, res:Response){
+
+  
+
+
+    try {
+
+        const clinical = await userModel.find({
+            role: { $nin: ['Administrator', 'Super Admin', 'Receptionist', 'Billing and Accounts Staff', 'IT Support'] }
+          });
+
+        
+
+
+        return res.status(200).json({
+            status :"success",
+            clinicalstaff:clinical,
+        });
+
+        
+    } catch (error:any) {
+        console.error(error);
+    }
+
+}
+
 
 
 //get Unique User by uuid
@@ -160,7 +191,7 @@ export async function updateUniqueUser(req:Request<{}, {}, UserInterface>, res:R
     //     });
     // }
         
-    const {firstname, lastname, email, phone, uuid, role, department, dob, gender, address} = req.body;
+    const {firstname, lastname, email, phone, uuid, role, department, dob, gender, address, aos, fee} = req.body;
     try {
         const user = await userModel.findOne({uuid});
 
@@ -197,3 +228,61 @@ export async function updateUniqueUser(req:Request<{}, {}, UserInterface>, res:R
 
 }
 
+
+
+
+//change unique user password
+
+
+export async function changeUniquePassword(req:Request<{uuid:string}, {}, UserInterface>, res:Response){
+
+
+
+    const uuid = req.params.uuid;
+ 
+
+        
+      const {password} = req.body;
+
+    try {
+
+
+        if(!password){
+            return res.status(400).json({
+                status:"failed",
+                error:"Password is required"
+            });
+        }
+    
+
+        const user = await userModel.findOne({uuid});
+
+        if(!user){
+            return res.status(400).json({
+                status:"failed",
+                error:"user  not registered"
+            });
+        }
+
+        
+        
+        const hashedPassword = await bcrypt.hash(password,10);
+
+      user.password = hashedPassword;
+
+      await user.save();
+
+
+        //send notification to user
+
+        return res.status(200).json({
+            status:"success",
+            message:"User Password updated successfully"
+        });
+
+
+    } catch (error) {
+        console.error(error);
+    }
+
+}

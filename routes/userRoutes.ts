@@ -1,9 +1,10 @@
 import { Router } from 'express';
 
 import isAuthenticated from '../middlewares/authenticated';
-import { changePassword, getNonClinicalStaff, getUniqueUser, updateProfile, updateUniqueUser } from '../controllers/userController';
+import { changePassword, getNonClinicalStaff, getUniqueUser, updateProfile, updateUniqueUser, changeUniquePassword, getClinicalStaff } from '../controllers/userController';
 import { validateChangePassword } from '../middlewares/userMiddleware';
 import isAdmin from '../middlewares/adminMiddleware';
+import isSuperAdmin from '../middlewares/superMiddleware';
 
 
 const userRouter = Router();
@@ -18,11 +19,14 @@ userRouter.put('/profile', isAuthenticated, updateProfile);
 userRouter.put('/changepassword', isAuthenticated, changePassword);
 
 
-//get all users that are not doctors or nurse
+//get all users that are not doctors or nurse or clinical staff
 
 //
 
 userRouter.get("/nonclincalstaff", getNonClinicalStaff)
+
+userRouter.get("/clinicalstaff", getClinicalStaff)
+
 
 //get unique user staff by uuid
 
@@ -31,5 +35,9 @@ userRouter.get("/unique/:uuid", isAuthenticated, isAdmin, getUniqueUser);
 
 //update user, this is for admin or support admin
 userRouter.put("/unique/update", isAuthenticated, isAdmin, updateUniqueUser);
+
+//change unique staff password
+userRouter.put("/unique/password/:uuid", isAuthenticated, isSuperAdmin, changeUniquePassword);
+
 
 export default userRouter;

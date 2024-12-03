@@ -20,6 +20,8 @@ interface IUser  extends Document {
     updatedAt?:Date | null;
     dob?:string | null;
     gender?:string | null;
+    aos?:string | null;
+    fee?:number | null;
 
 
 }
@@ -91,6 +93,18 @@ const UserSchema = new Schema<IUser>({
 
     gender : {
         type : String,
+        required : false,
+        default: null,
+    },
+
+    aos : {
+        type : String,
+        required : false,
+        default: null,
+    },
+
+    fee : {
+        type : Number,
         required : false,
         default: null,
     },
