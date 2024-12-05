@@ -3,10 +3,10 @@ import jwt from 'jsonwebtoken';
 import { UserInterface } from '../interfaces/userInterface';
 
 
-function isAuthenticated(req:Request<{}, {}, UserInterface>, res:Response, next:NextFunction){
+function isAuthenticated(req:Request<{}, {}>, res:Response, next:NextFunction){
 
 const token = req.header('Authorization')?.split(' ')[1];
-console.info('Token:', token);
+// console.info('Token:', token);
 if(!token){
     return res.status(401).json({ message: 'No token, authorization denied' });
 }
