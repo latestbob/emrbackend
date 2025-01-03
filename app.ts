@@ -11,6 +11,8 @@ import roleRouter from './routes/roleRoute';
 import userRouter from './routes/userRoutes';
 import patientRouter from './routes/patientRoute';
 
+import appointmentRouter from './routes/appointmentRoute';
+
  dotenv.config();
 // initialize express
 
@@ -46,6 +48,10 @@ app.use('/api/role', roleRouter);
 app.use('/api/user', userRouter);
 
 app.use('/api/patient', patientRouter);
+
+
+app.use('/api/appointment', appointmentRouter);
+
 
 // Retrieve the MongoDB URI from environment variables
 const mongodbURI = process.env.MONGO_URI;
