@@ -1,5 +1,13 @@
 import { model, Document, Schema } from "mongoose";
 
+
+interface IAllergies {
+  drugs: string[];  // List of drug allergies
+  food: string[];   // List of food allergies
+  other: string[];  // List of other allergies (e.g., environmental, skin)
+}
+
+
 interface IPatient extends Document {
   title: string;
   firstname: string;
@@ -36,6 +44,8 @@ interface IPatient extends Document {
   updatedAt?: Date | null;
   dob?: string | null;
   gender?: string | null;
+
+  allergies?: IAllergies; 
 }
 
 const PatientSchema = new Schema<IPatient>({
@@ -221,6 +231,16 @@ const PatientSchema = new Schema<IPatient>({
     type: Boolean,
     required: false,
     default: true,
+  },
+
+  allergies: {
+    type: {
+      drugs: { type: [String], default: [] },
+      food: { type: [String], default: [] },
+      other: { type: [String], default: [] },
+    },
+    default: {},
+    required: false // optional in schema (not required to have allergies field)
   },
 
   createdAt: {

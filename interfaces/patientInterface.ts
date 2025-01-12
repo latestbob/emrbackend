@@ -1,5 +1,12 @@
 import { Types } from 'mongoose'
 
+
+interface IAllergies {
+    drugs: string[];  // List of drug allergies
+    food: string[];   // List of food allergies
+    other: string[];  // List of other allergies (e.g., environmental, skin)
+  }
+
 export interface PatientInterface {
     _id : Types.ObjectId;
     title: string;
@@ -37,6 +44,6 @@ export interface PatientInterface {
     updatedAt?: Date | null;
     dob?: string | null;
     gender?: string | null;
-   
+    allergies?: IAllergies;
     
 }
