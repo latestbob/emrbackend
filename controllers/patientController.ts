@@ -52,6 +52,7 @@ export async function registerPatient(
     dob,
     gender,
     address,
+    allergies,
   } = req.body;
   try {
     const existedUser = await patientModel.findOne({ email });
@@ -115,6 +116,7 @@ export async function registerPatient(
       uuid,
       upi,
       fullname,
+      allergies,
     });
 
     await newUser.save();
