@@ -13,7 +13,7 @@ interface IAppointment extends Document {
   uuid: string;
   purpose?:string | null;
   visit_type?:string | null;
-  consultant?:string | null;
+
   visit_date?:string | null;
   scheduled_time?:string | null;
   is_urgent?:boolean | null;
@@ -30,6 +30,10 @@ interface IAppointment extends Document {
 
   createdAt?: Date;
   updatedAt?: Date | null;
+
+  consultant?:string | null;
+
+  consultant_uuid?:string | null;
 
  
 
@@ -177,6 +181,28 @@ email: {
     type: Date,
     default: null,
   },
+
+  consultant: {
+    type: String,
+    default: null,
+  },
+
+  is_billed: {
+    type: Boolean,
+    default: null,
+  },
+
+  status: {
+    type: String,
+    default: null,
+  },
+
+  consultant_uuid: {
+    type: String,
+    default: null,
+  },
+
+  
 });
 
 const appointmentModel = model<IAppointment>("Appointment", AppointmentSchema);

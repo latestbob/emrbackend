@@ -14,7 +14,7 @@ export interface AppointmentInterface {
     uuid: string;
     purpose?:string | null;
     visit_type?:string | null;
-    consultant?:string | null;
+   
     visit_date?:string | null;
     scheduled_time?:string | null;
     is_urgent?:boolean | null;
@@ -30,4 +30,8 @@ export interface AppointmentInterface {
     appointment_schedule?:Date | null;
     createdAt?: Date;
     updatedAt?: Date | null;
+
+    consultant?:string | null;
+    biller?:string | null;
+    consultant_uuid?:string | null;
 }

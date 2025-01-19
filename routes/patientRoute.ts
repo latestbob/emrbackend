@@ -3,7 +3,7 @@ import { Router } from 'express';
 // import { validateRegiseter, validateLogin, validateForgot, validateReset } from '../middlewares/authMiddleware';
 import isAuthenticated from '../middlewares/authenticated';
 import { validatePatientRegiseter } from '../middlewares/patientValidate';
-import { deleteUniquePatient, getPatients, getUniquePatient, registerPatient, updateUniquePatient } from '../controllers/patientController';
+import { deleteUniquePatient, getPatients, getUniquePatient, registerPatient, searchUsers, updateUniquePatient } from '../controllers/patientController';
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
 
@@ -27,6 +27,10 @@ patientRouter.put("/unique/:upi", isAuthenticated, updateUniquePatient);
 
 //delete unique patient
 patientRouter.delete("/unique/:upi", isAuthenticated, isSuperAdmin, deleteUniquePatient);
+
+// search patient by lastame, upi or uuid
+
+patientRouter.get("/search-users", isAuthenticated, searchUsers);
 
 
 export default patientRouter;

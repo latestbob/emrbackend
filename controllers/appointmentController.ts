@@ -11,6 +11,9 @@ import nodemailer from "nodemailer";
 
 import { AppointmentInterface } from "../interfaces/appointInterface";
 
+import userModel from "../models/userModels";
+import { UserInterface } from "../interfaces/userInterface";
+import billingModel from "../models/billingModel";
 
 //schedule an appointment
 export async function scheduleAppointment(
@@ -34,7 +37,7 @@ export async function scheduleAppointment(
     
     purpose,
     visit_type,
-    consultant,
+   
     visit_date,
     scheduled_time,
     is_urgent,
@@ -46,18 +49,13 @@ export async function scheduleAppointment(
     vital_temperature,
     vital_pulserate,
     is_billed,
+    consultant,
+    biller
     
    
   } = req.body;
   try {
-    // const existedUser = await appointmentModel.findOne({ email });
-
-    // if (existedUser) {
-    //   return res.status(400).json({
-    //     status: "failed",
-    //     error: "patient with email already exists",
-    //   });
-    // }
+   
 
     const existedOffice = await officeModel.find({ uuid: office_uuid });
 
@@ -76,6 +74,11 @@ export async function scheduleAppointment(
       .toString(16)
       .substring(2, 10)
       .toUpperCase();
+
+
+      const consultantInfo = await userModel.findOne({uuid:consultant});
+
+      
   
 
     
@@ -90,9 +93,9 @@ export async function scheduleAppointment(
         office,
         office_uuid,
         
-        purpose,
+      
         visit_type,
-        consultant,
+       
         visit_date,
         scheduled_time,
         is_urgent,
@@ -104,9 +107,40 @@ export async function scheduleAppointment(
         vital_temperature,
         vital_pulserate,
         is_billed,
+        purpose,
+        consultant:consultantInfo?.firstname + " " + consultantInfo?.lastname,
+        consultant_uuid:consultant,
     });
 
     await newAppointment.save();
+
+
+    if(is_billed){
+      const newBilling =  new billingModel({
+        patientUPI: upi,
+            encounterId: uuid,
+            dateOfService: visit_date,
+            placeOfService: office,
+            amount: consultantInfo?.fee, 
+            currency: "NGN", 
+            provider: {
+              office_uuid,
+              office: office, 
+            },
+            billing_officer: biller, // Assuming a default billing officer
+            billing_service: "Consultation", // Assuming a default billing service
+            sponsor,
+            sponsor_plan,
+            status: "pending", // Assuming default status
+      
+          });
+        
+          await newBilling.save();
+    }
+
+    
+
+    
 
     //send notification to user
 
@@ -237,10 +271,14 @@ export async function updateUniqueAppointent(
     }
 
 
+    const consultantInfo = await userModel.findOne({uuid:consultant});
+    const consultantDetails = consultantInfo?.firstname + " " + consultantInfo?.lastname;
+
 
     const updatedFields = {
         ...req.body, // Spread all fields from req.body
            // Add the computed fullname
+           consultant:consultantDetails
       };
   
     const updatedAppointment = await appointmentModel.findOneAndUpdate(
