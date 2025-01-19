@@ -274,3 +274,52 @@ export async function deleteUniquePatient(req:Request<{upi:string},{}>,res:Respo
         console.error(error);
     }
 }
+
+
+
+// search user by lastname, upi or uuid
+
+interface SearchQuery {
+  query: string;
+}
+
+export async function searchUsers(req: Request<{}, {}, SearchQuery>, res: Response): Promise<Response> {
+
+
+  try {
+    // Extract 'upi' from query parameters
+    const {query } = req.query;
+
+    // Validate 'upi'
+    if (!query || typeof query !== 'string') {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please provide a valid search query.',
+      });
+    }
+
+    // Build a filter object for dynamic search
+    const filter: any = {
+      $or: [
+        { lastname: { $regex: query, $options: 'i' } },
+        { upi: { $regex: query, $options: 'i' } },
+        { uuid: { $regex: query, $options: 'i' } },
+      ],
+    };
+
+    // Query the database with the built filter
+    const users = await patientModel.find(filter);
+
+    // Return the result
+    return res.status(200).json({
+      status: 'success',
+      users,
+    });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({
+      status: 'error',
+      message: 'An error occurred while searching for users.',
+    });
+  }
+}
