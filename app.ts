@@ -15,6 +15,12 @@ import appointmentRouter from './routes/appointmentRoute';
 import billingRouter from './routes/billingRoute';
 
 import consultationRouter from './routes/consultationRoute';
+import diagnosisRouter from './routes/diagnosisRoute';
+import drugsRouter from './routes/drugsRoute';
+import sponsorRouter from './routes/sponsorRoute';
+import serviceRouter from './routes/serviceRoute';
+
+
 
  dotenv.config();
 // initialize express
@@ -58,6 +64,14 @@ app.use('/api/appointment', appointmentRouter);
 app.use('/api/billing', billingRouter);
 
 app.use('/api/consultation', consultationRouter);
+
+app.use('/api/diagnosis', diagnosisRouter);
+
+app.use('/api/drugs', drugsRouter);
+
+app.use('/api/sponsor', sponsorRouter);
+
+app.use('/api/service', serviceRouter);
 
 
 // Retrieve the MongoDB URI from environment variables
