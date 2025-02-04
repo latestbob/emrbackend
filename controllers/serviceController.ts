@@ -275,3 +275,105 @@ export async function fetchAllService(req: Request<{}, {}>, res: Response) {
 //       console.error(error);
 //     }
 //   }
+
+
+    
+export async function fetchIvestigationByPlan(
+
+  req: Request<{ plan: string }, {}>,
+  res: Response
+  ) {
+  const plan = req.params.plan;
+  
+  try {
+      const existed = await sponsorplanModel.findOne({ plan_code:plan });
+  
+      if (!existed) {
+      return res.status(400).json({
+          status: "failed",
+          error: "Sponsor plan does not exists",
+      });
+      }
+
+      const services = await serviceModel.find({ plan_code: plan, type: "Pathology Investigations" });
+
+      return res.status(200).json({
+        status: "success",
+        investigations: services,
+      });
+  
+     
+  } catch (error: any) {
+      console.error(error);
+  }
+  }
+
+
+
+  //fetch image by plan
+
+  export async function fetchImagingByPlan(
+
+    req: Request<{ plan: string }, {}>,
+    res: Response
+    ) {
+    const plan = req.params.plan;
+    
+    try {
+        const existed = await sponsorplanModel.findOne({ plan_code:plan });
+    
+        if (!existed) {
+        return res.status(400).json({
+            status: "failed",
+            error: "Sponsor plan does not exists",
+        });
+        }
+  
+        const services = await serviceModel.find({ plan_code: plan, type: "Imaging Investigation" });
+  
+        return res.status(200).json({
+          status: "success",
+          imaging: services,
+        });
+    
+       
+    } catch (error: any) {
+        console.error(error);
+    }
+    }
+
+
+    //fetch other services by plan
+
+
+    export async function fetchOtherServiceByPlan(
+
+      req: Request<{ plan: string }, {}>,
+      res: Response
+      ) {
+      const plan = req.params.plan;
+      
+      try {
+          const existed = await sponsorplanModel.findOne({ plan_code:plan });
+      
+          if (!existed) {
+          return res.status(400).json({
+              status: "failed",
+              error: "Sponsor plan does not exists",
+          });
+          }
+    
+          const services = await serviceModel.find({ plan_code: plan, type: "Service" });
+    
+          return res.status(200).json({
+            status: "success",
+            otherservice: services,
+          });
+      
+         
+      } catch (error: any) {
+          console.error(error);
+      }
+      }
+    
+  

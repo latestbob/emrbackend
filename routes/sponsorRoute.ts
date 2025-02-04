@@ -5,7 +5,7 @@ import isAuthenticated from '../middlewares/authenticated';
 
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
-import { addNewSponsor, createSponsorPlan, deleteUniqueSponsor, fetchAllSponsor, fetchAllSponsorPlans, updateUniqueSponsor } from '../controllers/sponsorController';
+import { addNewSponsor, createSponsorPlan, deleteUniqueSponsor, fetchAllSponsor, fetchAllSponsorPlans, getUniqueSponsor, updateUniqueSponsor } from '../controllers/sponsorController';
 import { validateSponsor } from '../middlewares/sponsorMiddleware';
 
 
@@ -26,6 +26,9 @@ sponsorRouter.post('/create',validateSponsor, isAuthenticated, addNewSponsor);
 
 sponsorRouter.get('/fetch', isAuthenticated, fetchAllSponsor);
 
+//get unique sponsor
+
+sponsorRouter.get('/fetch/:uuid',  isAuthenticated, getUniqueSponsor);
 
 //edit unique sponsor
 
@@ -43,7 +46,7 @@ sponsorRouter.post('/plan/:uuid', isAuthenticated, createSponsorPlan);
 
 // get all plan code
 
-sponsorRouter.get('/fetch/plans', isAuthenticated, fetchAllSponsorPlans)
+sponsorRouter.get('/fetch/all/plans', isAuthenticated, fetchAllSponsorPlans)
 
 
 

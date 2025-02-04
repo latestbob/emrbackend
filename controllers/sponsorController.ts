@@ -102,6 +102,37 @@ export async function fetchAllSponsor(req: Request<{}, {}>, res: Response) {
   }
 
 
+  //get unique sponsor
+
+    
+export async function getUniqueSponsor(
+
+  req: Request<{ uuid: string }, {}, ISponsor>,
+  res: Response
+  ) {
+  const uuid = req.params.uuid;
+  
+  try {
+      const existed = await sponsorModel.findOne({ uuid });
+  
+      if (!existed) {
+      return res.status(400).json({
+          status: "failed",
+          error: "Sponsor does not exists",
+      });
+      }
+  
+      return res.status(200).json({
+        status: "success",
+        sponsor:existed,
+      });
+  } catch (error: any) {
+      console.error(error);
+  }
+  }
+
+
+
   //update unique sponsor
 
   

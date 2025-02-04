@@ -5,7 +5,7 @@ import isAuthenticated from '../middlewares/authenticated';
 
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
-import { addNewService, fetchAllService, fetchServiceByType } from '../controllers/serviceController';
+import { addNewService, fetchAllService, fetchImagingByPlan, fetchIvestigationByPlan, fetchOtherServiceByPlan, fetchServiceByType } from '../controllers/serviceController';
 import { validateService } from '../middlewares/serviceMiddleware';
 
 
@@ -28,7 +28,16 @@ serviceRouter.get('/fetch', isAuthenticated, fetchAllService)
 
 serviceRouter.get('/fetch/:type', isAuthenticated, fetchServiceByType);
 
+//get investigation by plan
 
+serviceRouter.get('/investigations/:plan', isAuthenticated, fetchIvestigationByPlan);
+
+//get imaging by plan_code
+serviceRouter.get('/imaging/:plan', isAuthenticated, fetchImagingByPlan);
+
+//get other service by plan_code
+
+serviceRouter.get("/otherservices/:plan", isAuthenticated, fetchOtherServiceByPlan)
 
 
 
