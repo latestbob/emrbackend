@@ -19,6 +19,8 @@ import diagnosisRouter from './routes/diagnosisRoute';
 import drugsRouter from './routes/drugsRoute';
 import sponsorRouter from './routes/sponsorRoute';
 import serviceRouter from './routes/serviceRoute';
+import encounterRouter from './routes/encounterRoute';
+
 
 
 
@@ -72,6 +74,8 @@ app.use('/api/drugs', drugsRouter);
 app.use('/api/sponsor', sponsorRouter);
 
 app.use('/api/service', serviceRouter);
+
+app.use('/api/encounter', encounterRouter);
 
 
 // Retrieve the MongoDB URI from environment variables
