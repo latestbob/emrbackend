@@ -20,7 +20,7 @@ diagnosisRouter.post('/create', isAuthenticated, addDiagnosis);
 
 //get all diagnosis
 
-diagnosisRouter.get('/fetch', isAuthenticated, fetchAllDiagnosis);
+diagnosisRouter.get('/fetch',  fetchAllDiagnosis);
 
 
 

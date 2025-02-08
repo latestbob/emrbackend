@@ -271,3 +271,32 @@ export async function fetchAllSponsorPlans(req: Request<{}, {}>, res: Response) 
       console.error(error);
     }
   }
+
+
+//fetch unique plan by name
+      
+export async function fetchUniquePlanByName(
+
+  req: Request<{ name: string }, {}, ISponsor>,
+  res: Response
+  ) {
+  const name = req.params.name;
+  
+  try {
+      const existed = await sponsorplanModel.findOne({ name });
+  
+      if (!existed) {
+      return res.status(400).json({
+          status: "failed",
+          error: "Sponsor Plan does not exists",
+      });
+      }
+  
+      return res.status(200).json({
+        status: "success",
+        plan:existed,
+      });
+  } catch (error: any) {
+      console.error(error);
+  }
+  }
