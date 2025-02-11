@@ -96,7 +96,7 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
         if(!user){
             return res.status(400).json({
                 status:"failed",
-                error:"user with email not found",
+                error:"Invalid email or password",
             });
         }
 
@@ -106,7 +106,7 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
         if(!isMatched){
             return res.status(400).json({
                 status:"failed",
-                error:"Invalid credentials",
+                error:"Invalid email or password",
             });
         }
 
@@ -114,11 +114,16 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
         const token = jwt.sign({ email: user.email, role: user.role }, process.env.JWT_SECRET as string, { expiresIn: '8h' });
 
        
+        // Hide user password
+        const userWithoutPassword = {
+          ...user.toObject(),
+          password: null
+        };
 
 
         return res.status(200).json({
             status:"success",
-           user:user,
+           user:userWithoutPassword,
            token:token,
         });
 
