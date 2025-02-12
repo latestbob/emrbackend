@@ -25,12 +25,23 @@ export async function createDepartment(req:Request<{},{}, DepartInterface>, res:
 
     try {
         // check if office with such id exists
-        const exist = officeModel.findOne({uuid:office_uuid});
+        const exist = await officeModel.findOne({uuid:office_uuid});
 
         if(!exist){
             return res.status(400).json({
                 status:"failed",
                 error:` Office with uuid of ${office_uuid} not found`
+            });
+        }
+
+        //check if depart with such name exists
+
+        const checkname = await departModel.findOne({name});
+
+        if(checkname){
+            return res.status(400).json({
+                status:"failed",
+                error:"Department with such name exists"
             });
         }
 

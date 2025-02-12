@@ -446,6 +446,8 @@ export async function forgotPass(req:Request<{}, {}>, res:Response){
       return res.status(200).json({
         status: "success",
         message: "Password reset email sent. Please check your inbox.",
+        resetToken: resetToken,
+
       });
    
 
@@ -460,6 +462,16 @@ export async function forgotPass(req:Request<{}, {}>, res:Response){
 
 
 export async function verifyToken(req:Request<{}, {}>, res:Response){
+
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()){
+        return res.status(400).json({
+            status:"failed",
+            error:errors.array(),
+        });
+  }
+
 
     const {token} = req.body;
 
@@ -484,7 +496,7 @@ export async function verifyToken(req:Request<{}, {}>, res:Response){
 
 //reset password
 
-export async function resetPass(req:Request<{}, {}, UserInterface>, res:Response){
+export async function resetPass(req:Request<{}, {}>, res:Response){
 
 
     // validate input
@@ -498,7 +510,7 @@ export async function resetPass(req:Request<{}, {}, UserInterface>, res:Response
         });
     }
         
-      const { email, password} = req.body;
+      const { email, password, token} = req.body;
     try {
         const user = await userModel.findOne({email});
 
@@ -509,7 +521,7 @@ export async function resetPass(req:Request<{}, {}, UserInterface>, res:Response
             });
         }
 
-        
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
 
         const hashedPassword = await bcrypt.hash(password,10);
 
@@ -526,8 +538,9 @@ export async function resetPass(req:Request<{}, {}, UserInterface>, res:Response
         });
 
 
-    } catch (error) {
-        console.error(error);
+    } catch (error:any) {
+      console.error("Token validation error:", error.message);
+      return res.status(400).json({ valid: false, error: "Invalid or expired token" });
     }
 
 }

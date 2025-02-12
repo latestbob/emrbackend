@@ -12,7 +12,7 @@ const patientRouter = Router();
 
 // register a user
 
-patientRouter.post('/register', validatePatientRegiseter, registerPatient);
+patientRouter.post('/register', isAuthenticated, validatePatientRegiseter, registerPatient);
 
 //get all registered patients
 patientRouter.get("/all", isAuthenticated, getPatients);
@@ -22,7 +22,7 @@ patientRouter.get("/unique/:upi", isAuthenticated, getUniquePatient);
 
 
 //edit unique patient
-patientRouter.put("/unique/:upi", isAuthenticated, updateUniquePatient);
+patientRouter.put("/unique/:upi", isAuthenticated, validatePatientRegiseter, updateUniquePatient);
 
 
 //delete unique patient

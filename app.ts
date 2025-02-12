@@ -40,6 +40,8 @@ app.use(cors({
     credentials: true // Allow cookies if needed
 }));
 
+// app.use(cors());
+
 
 
 
