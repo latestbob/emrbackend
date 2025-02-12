@@ -9,7 +9,7 @@ const authRouter = Router();
 
 // register a user
 
-authRouter.post('/register', isAuthenticated, validateRegiseter, registerUser);
+authRouter.post('/register', isAuthenticated, isAdmin, validateRegiseter, registerUser);
 
 //login user
 authRouter.post('/login', validateLogin, LoginUser);

@@ -17,7 +17,7 @@ const userRouter = Router();
 userRouter.put('/profile', isAuthenticated, updateProfile);
 
 //change password
-userRouter.put('/changepassword', validateChangePassword, isAuthenticated, changePassword);
+userRouter.put('/changepassword', validateChangePassword, isAuthenticated, isAdmin, changePassword);
 
 
 //get all users that are not doctors or nurse or clinical staff

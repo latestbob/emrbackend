@@ -3,6 +3,8 @@ import { createRole } from '../controllers/roleController';
 
 import { validateRole } from '../middlewares/validateRole';
 import { getRole, deleteRole } from '../controllers/roleController';
+import isAuthenticated from '../middlewares/authenticated';
+import isAdmin from '../middlewares/adminMiddleware';
 
 
 
@@ -11,7 +13,7 @@ const roleRouter = Router ();
 
 //create role
 
-roleRouter.post('/create', validateRole, createRole); //sudo admin
+roleRouter.post('/create', validateRole, isAuthenticated, isAdmin, createRole); //sudo admin
 
 //get all role in an office
 

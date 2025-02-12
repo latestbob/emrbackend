@@ -7,13 +7,14 @@ import { validatePatientRegiseter } from '../middlewares/patientValidate';
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
 import { getAppointments, getUniqueAppointment, getUniquePatientAppointment, scheduleAppointment, updateUniqueAppointent } from '../controllers/appointmentController';
+import { validateAppointment } from '../middlewares/appointmentMiddleware';
 
 const appointmentRouter = Router();
 
 
 // register a user
 
-appointmentRouter.post('/schedule', isAuthenticated, scheduleAppointment);
+appointmentRouter.post('/schedule', isAuthenticated, validateAppointment,  scheduleAppointment);
 
 //get all appointments
 
