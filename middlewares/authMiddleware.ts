@@ -24,7 +24,12 @@ export const validateRegiseter = [
     .matches(/[a-z]/).withMessage('Password must contain at least one lowercase letter')
     .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter')
     .matches(/[0-9]/).withMessage('Password must contain at least one number')
-    .matches(/[\W_]/).withMessage('Password must contain at least one special character')
+    .matches(/[\W_]/).withMessage('Password must contain at least one special character'),
+
+body('fee').optional().isNumeric().withMessage('Fee must be a number'),
+body('aos').optional().isString().withMessage('aos must be a string'),
+
+body('dob').optional().isISO8601().withMessage('Date of birth must be a valid date'),
 ];
 
 export const validateLogin = [

@@ -50,7 +50,21 @@ export async function updateProfile(req:Request<{},{}, UserInterface>, res:Respo
 
 export async function changePassword(req:Request<{},{}, UserInterface>, res:Response){
 
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            "status":"failed",
+            "error":errors.array(),
+        });
+    }
+
     const {email, password} = req.body;
+
+      // validate input
+
+     
 
 
     try {
@@ -180,16 +194,16 @@ export async function getUniqueUser(req:Request<{uuid:string},{}, UserInterface>
 export async function updateUniqueUser(req:Request<{}, {}, UserInterface>, res:Response){
 
 
-    // validate input
+    //validate input
 
-    // const errors = validationResult(req);
+    const errors = validationResult(req);
 
-    // if(!errors.isEmpty()){
-    //     return res.status(400).json({
-    //         "status":"failed",
-    //         "error":errors.array(),
-    //     });
-    // }
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            "status":"failed",
+            "error":errors.array(),
+        });
+    }
         
     const {firstname, lastname, email, phone, uuid, role, department, dob, gender, address, aos, fee} = req.body;
     try {
