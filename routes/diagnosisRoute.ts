@@ -6,7 +6,7 @@ import isAuthenticated from '../middlewares/authenticated';
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
 import { addDiagnosis, fetchAllDiagnosis } from '../controllers/diagnosisController';
-
+import isDoctor from '../middlewares/doctorMiddleware';
 
 
 
@@ -16,7 +16,7 @@ const diagnosisRouter = Router();
 
 // add new diagnosis
 
-diagnosisRouter.post('/create', isAuthenticated, addDiagnosis);
+diagnosisRouter.post('/create', isAuthenticated, isDoctor, addDiagnosis);
 
 //get all diagnosis
 

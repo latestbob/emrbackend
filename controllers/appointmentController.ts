@@ -72,9 +72,9 @@ export async function scheduleAppointment(
     // check if office doesn't exist
 
     if (!existedOffice) {
-      return res.status(400).json({
+      return res.status(404).json({
         status: "failed",
-        error: "office does not exists",
+        error: "office does not exist",
       });
     }
 
@@ -195,7 +195,7 @@ export async function getUniqueAppointment(
       const existed = await appointmentModel.findOne({ uuid });
   
       if (!existed) {
-        return res.status(400).json({
+        return res.status(404).json({
           status: "failed",
           message: "Appointment not found",
         });
@@ -220,18 +220,20 @@ export async function getUniqueAppointment(
     try {
       //
   
-      const existed = await appointmentModel.find({ upi: upi });
+      const existed = await userModel.findOne({ upi: upi });
   
       if (!existed) {
-        return res.status(400).json({
+        return res.status(404).json({
           status: "failed",
-          message: "Appointment not found",
+          message: "user with upi not found",
         });
       }
+
+      const appointments = await appointmentModel.find({ upi: upi });
   
       return res.status(200).json({
         status: "success",
-        appointments: existed,
+        appointments: appointments,
       });
     } catch (error: any) {
       console.error(error);

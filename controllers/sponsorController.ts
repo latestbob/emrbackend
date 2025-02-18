@@ -43,6 +43,17 @@ export async function addNewSponsor(
 ) {
   // validate input
 
+
+  const errors = validationResult(req);
+
+
+  if(!errors.isEmpty()){
+       return res.status(400).json({
+           status:"failed",
+           error: errors.array(),
+       });
+  }
+
   const { name, type, phone, contact_email, contact_person } = req.body;
   
   try {
@@ -116,9 +127,9 @@ export async function getUniqueSponsor(
       const existed = await sponsorModel.findOne({ uuid });
   
       if (!existed) {
-      return res.status(400).json({
+      return res.status(404).json({
           status: "failed",
-          error: "Sponsor does not exists",
+          error: "Sponsor does not exist",
       });
       }
   
@@ -147,9 +158,9 @@ export async function updateUniqueSponsor(
         const existed = await sponsorModel.findOne({ uuid });
     
         if (!existed) {
-        return res.status(400).json({
+        return res.status(404).json({
             status: "failed",
-            error: "Sponsor does not exists",
+            error: "Sponsor does not exist",
         });
         }
     

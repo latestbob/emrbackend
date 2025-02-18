@@ -28,7 +28,7 @@ export async function createRole(req:Request<{},{}, RoleInterface>, res:Response
         const exist = officeModel.findOne({uuid:office_uuid});
 
         if(!exist){
-            return res.status(400).json({
+            return res.status(404).json({
                 status:"failed",
                 error:` Medcenter with uuid of ${office_uuid} not found`
             });
@@ -79,7 +79,7 @@ export async function getRole(req:Request<{office_uuid:string},{}, RoleInterface
         const exists = await officeModel.findOne({uuid:office_uuid});
 
         if(!exists){
-            return res.status(400).json({
+            return res.status(404).json({
                 status:"failed",
                 error:"Medcenter not found",
             });

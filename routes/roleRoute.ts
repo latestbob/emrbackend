@@ -17,7 +17,7 @@ roleRouter.post('/create', validateRole, isAuthenticated, isAdmin, createRole); 
 
 //get all role in an office
 
-roleRouter.get('/:office_uuid', getRole);
+roleRouter.get('/:office_uuid',isAuthenticated, getRole);
 
 //delete Role
 

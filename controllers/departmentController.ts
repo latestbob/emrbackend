@@ -83,7 +83,7 @@ export async function getDepartments(req:Request<{uuid:string},{}, DepartInterfa
         const check = await officeModel.findOne({uuid:uuid});
 
         if(!check){
-            return res.status(400).json({
+            return res.status(404).json({
                 status:"failed",
                 error:"office not found",
             });

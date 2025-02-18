@@ -17,7 +17,7 @@ export const validateRegiseter = [
     body('office').isString().withMessage("office must be a string").notEmpty().withMessage("Office is required"),
     body('gender').isString().withMessage("gender must be a string").notEmpty().withMessage("Gender is required").isIn(["Male", "Female"]).withMessage("Gender must be either 'Male' or 'Female'"),    
     body('uuid').optional().isString().withMessage("uuid must be a string"),
-    body('role').isString().withMessage("role must be a string").withMessage("Role is required"),
+    body('role').isString().withMessage("role must be a string").notEmpty().withMessage("role is required"),
     body('department').optional().isString().withMessage("department must be a string"),
     body('position').optional().isString().withMessage("position must be a string"),
     body('password').notEmpty().withMessage('password is required').isLength({min:8}).withMessage("password must be at least 8 characters long")

@@ -14,7 +14,8 @@ export const validatePatientRegiseter = [
     .isLength({min:10 , max:15}).withMessage("Phone number must be between 10 and 15 characters long")
     .matches(/^(?:\+?234|0)?[1-9]\d{9,14}$/).withMessage('Phone number must be a valid international phone number'),
 
-    body('office').isString().withMessage("office must be a string").notEmpty().withMessage("Office is required"),
+    body('office').isString().withMessage("office must be a string").notEmpty().withMessage("office is required"),
+    body('office_uuid').isString().withMessage("office_uuid must be a string").notEmpty().withMessage("office_uuid is required"),
     body('gender').isString().withMessage("gender must be a string").notEmpty().withMessage("Gender is required").isIn(["Male", "Female"]).withMessage("Gender must be either 'Male' or 'Female'"),    
     body('uuid').optional().isString().withMessage("uuid must be a string"),
     // body('dob').isString().withMessage("DOB must be a string").withMessage("DOB is required"),
@@ -37,17 +38,4 @@ export const validatePatientRegiseter = [
 ];
 
 
-// <option value="Spouse">Spouse</option>
-// <option value="Parent">Parent</option>
-// <option value="Child">Child</option>
-// <option value="Sibling">Sibling</option>
-// <option value="Grandparent">Grandparent</option>
-// <option value="Grandchild">Grandchild</option>
-// <option value="Aunt">Aunt</option>
-// <option value="Uncle">Uncle</option>
-// <option value="Cousin">Cousin</option>
-// <option value="Niece">Niece</option>
-// <option value="Nephew">Nephew</option>
-// <option value="Guardian">Guardian</option>
-// <option value="Friend">Friend</option>
-// <option value="Other">Other</option>
+

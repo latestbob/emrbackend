@@ -47,6 +47,19 @@ export async function registerUser(req:Request<{}, {}, UserInterface>, res:Respo
             });
         }
 
+      //Super Admin, Administrator, Receptionist, Accountant, Billing and Accounts Staff, IT Support
+
+      if (role && !["Super Admin", "Administrator", "Receptionist", "Accountant", "Billing and Accounts Staff", "IT Support"].includes(role)) {
+        if (!fee || !aos) {
+          return res.status(400).json({
+            status: "failed",
+            error: "both fee  and aos are required for clinical staff"
+          });
+        }
+      }
+
+     
+
         const hashedPassword = await bcrypt.hash(password,10);
 
         const uuid:string =  Math.random().toString(36).substring(2, 8).toLowerCase();
@@ -94,9 +107,9 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
 
         const user = await userModel.findOne({email});
         if(!user){
-            return res.status(400).json({
+            return res.status(404).json({
                 status:"failed",
-                error:"Invalid email or password",
+                error:"User not found",
             });
         }
 
@@ -104,9 +117,9 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
 
         const isMatched = await bcrypt.compare(password, user.password);
         if(!isMatched){
-            return res.status(400).json({
+            return res.status(404).json({
                 status:"failed",
-                error:"Invalid email or password",
+                error:"User not found",
             });
         }
 

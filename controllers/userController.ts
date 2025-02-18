@@ -72,7 +72,7 @@ export async function changePassword(req:Request<{},{}, UserInterface>, res:Resp
         const existed = await userModel.findOne({email});
 
         if(!existed){
-            return res.status(400).json({message:"user not found"});
+            return res.status(404).json({message:"user not found"});
         }
 
         const hashedPassword = await bcrypt.hash(password,10);
@@ -169,7 +169,7 @@ export async function getUniqueUser(req:Request<{uuid:string},{}, UserInterface>
         const existed = await userModel.findOne({uuid});
 
         if(!existed){
-            return res.status(400).json({
+            return res.status(404).json({
                 "status":"failed",
                 "message":"User not found"
             });

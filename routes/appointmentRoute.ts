@@ -9,12 +9,14 @@ import isSuperAdmin from '../middlewares/superMiddleware';
 import { getAppointments, getUniqueAppointment, getUniquePatientAppointment, scheduleAppointment, updateUniqueAppointent } from '../controllers/appointmentController';
 import { validateAppointment } from '../middlewares/appointmentMiddleware';
 
+import isReceptionAdmin from '../middlewares/receptionAdminMiddleware';
+
 const appointmentRouter = Router();
 
 
 // register a user
 
-appointmentRouter.post('/schedule', isAuthenticated, validateAppointment,  scheduleAppointment);
+appointmentRouter.post('/schedule', isAuthenticated, isReceptionAdmin, validateAppointment,  scheduleAppointment);
 
 //get all appointments
 

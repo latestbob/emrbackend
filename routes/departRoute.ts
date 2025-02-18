@@ -15,7 +15,7 @@ departRouter.post('/create', validateDepartment, isAuthenticated, isAdmin, creat
 
 //get departments in an office
 
-departRouter.get('/office/:uuid', getDepartments); 
+departRouter.get('/office/:uuid',isAuthenticated, getDepartments); 
 
 //update department   //sudo admin
 

@@ -26,7 +26,7 @@ userRouter.put('/changepassword', validateChangePassword, isAuthenticated, isAdm
 
 userRouter.get("/nonclincalstaff", isAuthenticated, getNonClinicalStaff)
 
-userRouter.get("/clinicalstaff", getClinicalStaff)
+userRouter.get("/clinicalstaff", isAuthenticated, getClinicalStaff)
 
 
 //get unique user staff by uuid
