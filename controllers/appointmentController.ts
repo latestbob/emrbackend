@@ -167,19 +167,49 @@ export async function scheduleAppointment(
 
 //get all registered appointments
 
+// export async function getAppointments(req: Request<{}, {}>, res: Response) {
+//     try {
+//       const appointment = await appointmentModel.find({});
+  
+//       return res.status(200).json({
+//         status: "success",
+//         appointments: appointment,
+//       });
+//     } catch (error: any) {
+//       console.error(error);
+//     }
+//   }
+  
+
+
 export async function getAppointments(req: Request<{}, {}>, res: Response) {
-    try {
-      const appointment = await appointmentModel.find({});
-  
-      return res.status(200).json({
-        status: "success",
-        appointments: appointment,
-      });
-    } catch (error: any) {
-      console.error(error);
-    }
+  try {
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 6;
+    const skip = (page - 1) * limit;
+
+    const appointment = await appointmentModel.find({}).sort({createdAt : -1 }).skip(skip).limit(limit);
+
+    const totalAppointments = await appointmentModel.countDocuments({});
+    const totalPages = Math.ceil(totalAppointments / limit);
+
+    return res.status(200).json({
+      status: "success",
+      appointments: appointment,
+      totalPages,
+      currentPage: page,
+    });
+
+
+    // const appointment = await appointmentModel.find({});
+
+   
+  } catch (error: any) {
+    console.error(error);
   }
-  
+}
+
 
   //get unique patient by upi
 
@@ -290,7 +320,9 @@ export async function updateUniqueAppointent(
     const updatedFields = {
         ...req.body, // Spread all fields from req.body
            // Add the computed fullname
-           consultant:consultantDetails
+          //  consultant:consultantDetails
+           consultant:consultantInfo?.firstname + " " + consultantInfo?.lastname,
+        consultant_uuid:consultant,
       };
   
     const updatedAppointment = await appointmentModel.findOneAndUpdate(
@@ -305,6 +337,36 @@ export async function updateUniqueAppointent(
       appointment: updatedAppointment,
     });
   } catch (error) {
+    console.error(error);
+  }
+}
+
+
+//cancel appointment
+
+export async function cancelAppointment(req: Request<{uuid:string}, {}, {}>, res: Response) {
+
+  const uuid = req.params.uuid;
+
+  try {
+    const appointment = await appointmentModel.findOne({ uuid });
+
+    if (!appointment) {
+      return res.status(404).json({
+        status: "failed",
+        error: "Appointment not found",
+      });
+    }
+
+    appointment.status = "cancelled";
+    await appointment.save();
+   
+
+    return res.status(200).json({
+      status: "success",
+      message: "Appointment cancelled successfully",
+    });
+  } catch (error:any) {
     console.error(error);
   }
 }

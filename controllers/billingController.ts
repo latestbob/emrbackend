@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { PatientInterface } from "../interfaces/patientInterface";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -12,7 +12,12 @@ import nodemailer from "nodemailer";
 import userModel from "../models/userModels";
 
 import billingModel from "../models/billingModel";
+import TransactionModel from "../models/transactionModel"; // Add this line
 import { BillingInterface } from "../interfaces/billingInterface";
+import { ITransaction } from "../interfaces/transactionInterface";
+import patientModel from "../models/patientModel";
+import encounterModel from "../models/encounterModel";
+
 
 //schedule an appointment
 export async function createBill(
@@ -54,11 +59,14 @@ export async function createBill(
     // check if office doesn't exist
 
     if (!existedOffice) {
-      return res.status(400).json({
+      return res.status(404).json({
         status: "failed",
-        error: "office does not exists",
+        error: "office not found",
       });
     }
+
+
+    
 
   
 
@@ -121,3 +129,142 @@ export async function getAllBillingEncounters(req: Request<{}, {}>, res: Respons
   }
 
 
+
+
+  export async function createEncounterTransaction(
+    req: Request<{}, {}, ITransaction>,
+    res: Response
+  ) {
+    // validate input
+
+    
+
+     // validate input
+
+     const errors = validationResult(req);
+
+     if(!errors.isEmpty()){
+         return res.status(400).json({
+             "status":"failed",
+             "error":errors.array(),
+         });
+     }
+
+    const {
+      patientId,
+      encounterUuid,
+      date,
+      totalAmount,
+      paymentStatus,
+      paymentMethod,
+      paymentReference,
+      services,
+      createdBy,
+      updatedBy,
+      createdAt,
+      updatedAt,
+      sponsor,
+      sponsor_plan
+    } = req.body;
+
+
+
+
+    if (!mongoose.Types.ObjectId.isValid(patientId)) {
+        return res.status(400).json({
+          status: "failed",
+          error: "Invalid patient ID format",
+        });
+      }
+
+    try {
+
+        // Fetch encounter by UUID
+    const encounter = await encounterModel.findOne({ uuid: encounterUuid });
+    if (!encounter) {
+      return res.status(404).json({
+        status: "failed",
+        error: "Encounter not found",
+      });
+    }
+
+      const newTransaction: ITransaction = {
+        patientId,
+        encounterUuid,
+        date,
+        totalAmount,
+        paymentStatus,
+        paymentMethod,
+        paymentReference,
+        services,
+        createdBy,
+        updatedBy,
+        createdAt,
+        updatedAt,
+        sponsor,
+        sponsor_plan
+      };
+
+
+      const userExist = await patientModel.findById(patientId);
+
+      if(!userExist){
+        return res.status(404).json({
+          status: "failed",
+          error: "patient not found",
+        });
+      }
+
+
+
+      const transaction = new TransactionModel(newTransaction);
+      // await transaction.save();
+
+      //update encounter status for investigation, imaging and otherservices to billed
+
+      // Function to update billing status for matching service IDs
+    const updateBillingStatus = (encounterServices: any[], transactionServices: any[]) => {
+      return encounterServices.map((service) => {
+        const matchedService = transactionServices.find(
+          (tService) => tService._id.toString() === service._id.toString()
+      
+        );
+        return matchedService ? { ...service, billing_status: "billed" } : service;
+      });
+    };
+
+        // Update only the services with matching IDs
+
+        if (services && services.investigations) {
+          encounter.investigations = encounter.investigations ? updateBillingStatus(encounter.investigations, services.investigations) : [];
+        }
+
+        if(services && services.imaging){
+          encounter.imaging = encounter.imaging ? updateBillingStatus(encounter.imaging, services.imaging) : [];
+        }
+
+        if(services && services.otherservices){
+          encounter.otherservices = encounter.otherservices ? updateBillingStatus(encounter.otherservices, services.otherservices) : [];
+        }
+       
+       
+       
+    
+        // Set overall encounter billing status
+        encounter.status = "billed";
+    
+        await encounter.save();
+    
+
+      return res.status(200).json({
+        status: "success",
+        message: "Transaction created successfully",
+        transaction,
+      });
+    } catch (error:any) {
+      console.error(error);
+    }
+   
+  
+  
+  }

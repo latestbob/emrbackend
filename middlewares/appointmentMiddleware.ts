@@ -24,7 +24,7 @@ body('vital_pulserate').optional().isNumeric().withMessage("vital_pulserate must
 body('is_billed').optional().isBoolean().withMessage("is_billed must be a boolean"),
     body('consultant').isString().withMessage("consultant must be a string").notEmpty().withMessage("consultant is required"),
     body('visit_type').isString().withMessage("visit_type must be a string").notEmpty().withMessage("visit_type is required"),
-body('visit_date').matches(/^\d{2}\/\d{2}\/\d{4}$/).withMessage("visit_date must be in the format DD/MM/YYYY").notEmpty().withMessage("visit_date is required"),
+body('visit_date').notEmpty().withMessage("visit_date is required"),
    
     
     body('is_urgent').isBoolean().withMessage("is_urgent must be a boolean").notEmpty().withMessage("is_urgent is required"),

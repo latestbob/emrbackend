@@ -12,9 +12,8 @@ import userModel from "../models/userModels";
 import patientModel from "../models/patientModel";
 import encounterModel from "../models/encounterModel";
 import { IEncounter } from "../interfaces/encounterInterface";
-// import sponsorModel from "../models/sponsorMode";
-// import { error } from "console";
-// import sponsorplanModel from "../models/sponsorplanModel";
+import appointmentModel from "../models/appointmentModel";
+
 
 //schedule an appointment
 export async function addEncounter(
@@ -39,6 +38,7 @@ export async function addEncounter(
     investigations,
     imaging,
     otherservices,
+    appointment_uuid
   
     
   } = req.body;
@@ -84,11 +84,17 @@ export async function addEncounter(
       investigations,
       imaging,
       otherservices,
+      appointment_uuid,
     });
 
     await newEncounter.save();
 
     //send notification to user
+
+    await appointmentModel.updateOne(
+      { uuid: appointment_uuid },
+      { $set: { status: "consulted" } }
+    );
 
     return res.status(200).json({
       status: "success",
@@ -231,14 +237,7 @@ export async function fetchAllEncounter(req: Request<{}, {}>, res: Response) {
     try {
         const existed = await encounterModel.find({ status }).populate("patient");
     
-        // if (!existed) {
-        // return res.status(400).json({
-        //     status: "failed",
-        //     error: "Encounter does not exists",
-        // });
-        // }
-  
-       
+      
   
         return res.status(200).json({
           status: "success",
@@ -251,3 +250,131 @@ export async function fetchAllEncounter(req: Request<{}, {}>, res: Response) {
     }
     }
   
+
+
+    //fetch unique encounter by appointment_uuid
+
+  export async function fetchEncounterByAppointmentUuid(
+
+    req: Request<{ appointment_uuid: string }, {}>,
+    res: Response
+    ) {
+    const appointment_uuid = req.params.appointment_uuid;
+    
+    try {
+        const existed = await encounterModel.findOne({ appointment_uuid }).populate("patient");
+    
+        if (!existed) {
+        return res.status(404).json({
+            status: "failed",
+            error: "Encounter not found",
+        });
+        }
+  
+       
+  
+        return res.status(200).json({
+          status: "success",
+          encounter: existed,
+        });
+    
+       
+    } catch (error: any) {
+        console.error(error);
+    }
+    }
+  
+
+
+    //updated enconunter / consultation by appointment_uuid
+
+    export async function updateConsultationEncounter(
+      req: Request<{appointment_uuid: string }, {}, IEncounter>,
+      res: Response
+    ) {
+
+
+        // validate input
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            "status":"failed",
+            "error":errors.array(),
+        });
+    }
+
+    
+      const {
+    
+        comment,
+    
+        vitals,
+        allergies,
+        symptoms,
+        family_history,
+        social_history,
+        diagnosis,
+        investigations,
+        imaging,
+        otherservices,
+        appointment_uuid
+      
+        
+      } = req.body;
+    
+      try {
+      
+
+        const appointment_uuid = req.params.appointment_uuid;
+
+        const existed = await encounterModel.findOne({ appointment_uuid });
+    
+        if (!existed) {
+        return res.status(404).json({
+            status: "failed",
+            error: "Encounter not found",
+        });
+        }
+    
+
+       
+       
+       
+
+        await encounterModel.updateOne(
+          { appointment_uuid },
+          {
+            $set: {
+              
+            
+          
+              // comment,
+        
+              vitals,
+              allergies,
+              symptoms,
+              family_history,
+              social_history,
+              diagnosis,
+              investigations,
+              imaging,
+              otherservices,
+          
+             
+            },
+          }
+        );
+    
+        //send notification to user
+    
+    
+        return res.status(200).json({
+          status: "success",
+          message: "Encounter update successfully",
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }

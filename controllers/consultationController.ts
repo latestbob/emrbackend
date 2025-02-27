@@ -33,7 +33,7 @@ export async function getUniqueConsultation(
     try {
       //
   
-      const existed = await appointmentModel.find({ consultant_uuid });
+      const existed = await appointmentModel.find({ consultant_uuid }).sort({createdAt : -1 });
   
       if (!existed) {
         return res.status(400).json({

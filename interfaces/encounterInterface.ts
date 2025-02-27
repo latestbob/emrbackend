@@ -82,6 +82,8 @@ export interface IEncounter extends Document {
 
     outcome?: string | null;
 
+    appointment_uuid?: string | null;
+
 
 
 

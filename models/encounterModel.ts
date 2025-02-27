@@ -79,6 +79,7 @@ interface IEncounter extends Document {
     billing_officer?: string | null;
 
     outcome?: string | null;
+    appointment_uuid?: string | null;
 
 
 
@@ -242,6 +243,11 @@ const EncounterSchema = new Schema<IEncounter>({
         default: null,
       },
       outcome: {
+        type: String,
+        default: null,
+      },
+
+      appointment_uuid: {
         type: String,
         default: null,
       },

@@ -5,7 +5,11 @@ import isAuthenticated from '../middlewares/authenticated';
 
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
-import { createBill, getAllBillingEncounters } from '../controllers/billingController';
+import { createBill, createEncounterTransaction, getAllBillingEncounters } from '../controllers/billingController';
+import isReceptionAdmin from '../middlewares/receptionAdminMiddleware';
+import { validateTransaction } from '../middlewares/transactionMiddleware';
+// import { ITransaction } from '../interfaces/ITransaction';
+
 
 
 
@@ -20,6 +24,8 @@ billingRouter.post('/create', isAuthenticated, createBill);
 //get all appointments
 
 billingRouter.get('/all', isAuthenticated, getAllBillingEncounters);
+
+billingRouter.post('/transaction', isAuthenticated, isReceptionAdmin, validateTransaction, createEncounterTransaction);
 
 
 
