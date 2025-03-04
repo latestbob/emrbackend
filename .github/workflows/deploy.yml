@@ -22,4 +22,7 @@ jobs:
       - name: Build Docker Image
         run: docker build -t nelloehrtest:latest .
 
-      
+      - name: Tag and Push Image to DockerHub
+        run: |
+          docker tag nelloehrtest:latest ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
