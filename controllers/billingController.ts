@@ -17,6 +17,7 @@ import { BillingInterface } from "../interfaces/billingInterface";
 import { ITransaction } from "../interfaces/transactionInterface";
 import patientModel from "../models/patientModel";
 import encounterModel from "../models/encounterModel";
+import moment from "moment";
 
 
 //schedule an appointment
@@ -151,8 +152,8 @@ export async function getAllBillingEncounters(req: Request<{}, {}>, res: Respons
      }
 
     const {
-      patientId,
-      encounterUuid,
+      patientUPI,
+      type_uuid,
       date,
       totalAmount,
       paymentStatus,
@@ -164,23 +165,18 @@ export async function getAllBillingEncounters(req: Request<{}, {}>, res: Respons
       createdAt,
       updatedAt,
       sponsor,
-      sponsor_plan
+      sponsor_plan,
+      type
     } = req.body;
 
 
 
 
-    if (!mongoose.Types.ObjectId.isValid(patientId)) {
-        return res.status(400).json({
-          status: "failed",
-          error: "Invalid patient ID format",
-        });
-      }
 
     try {
 
         // Fetch encounter by UUID
-    const encounter = await encounterModel.findOne({ uuid: encounterUuid });
+    const encounter = await encounterModel.findOne({ uuid: type_uuid });
     if (!encounter) {
       return res.status(404).json({
         status: "failed",
@@ -188,25 +184,25 @@ export async function getAllBillingEncounters(req: Request<{}, {}>, res: Respons
       });
     }
 
-      const newTransaction: ITransaction = {
-        patientId,
-        encounterUuid,
-        date,
-        totalAmount,
-        paymentStatus,
-        paymentMethod,
-        paymentReference,
-        services,
-        createdBy,
-        updatedBy,
-        createdAt,
-        updatedAt,
-        sponsor,
-        sponsor_plan
-      };
+      // const newTransaction: ITransaction = {
+      //   patientId,
+      //   encounterUuid,
+      //   date,
+      //   totalAmount,
+      //   paymentStatus,
+      //   paymentMethod,
+      //   paymentReference,
+      //   services,
+      //   createdBy,
+      //   updatedBy,
+      //   createdAt,
+      //   updatedAt,
+      //   sponsor,
+      //   sponsor_plan
+      // };
 
 
-      const userExist = await patientModel.findById(patientId);
+      const userExist = await patientModel.findOne({upi : patientUPI});
 
       if(!userExist){
         return res.status(404).json({
@@ -217,8 +213,27 @@ export async function getAllBillingEncounters(req: Request<{}, {}>, res: Respons
 
 
 
-      const transaction = new TransactionModel(newTransaction);
-      // await transaction.save();
+      const newTransaction = new TransactionModel({
+        patientUPI,
+        type_uuid,
+        date: date || new Date(),
+        totalAmount,
+        paymentStatus,
+        paymentMethod,
+        paymentReference,
+        services,
+        billingOfficer: createdBy,
+        updatedBy,
+        sponsor,
+        sponsor_plan,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        month: moment().format("MMMM"), // Current month
+        year: moment().format("YYYY"), // Current year
+        type:"encounter"
+      });
+  
+      await newTransaction.save();
 
       //update encounter status for investigation, imaging and otherservices to billed
 
@@ -252,6 +267,7 @@ export async function getAllBillingEncounters(req: Request<{}, {}>, res: Respons
     
         // Set overall encounter billing status
         encounter.status = "billed";
+        encounter.billing_officer = createdBy;
     
         await encounter.save();
     
@@ -259,7 +275,7 @@ export async function getAllBillingEncounters(req: Request<{}, {}>, res: Respons
       return res.status(200).json({
         status: "success",
         message: "Transaction created successfully",
-        transaction,
+        
       });
     } catch (error:any) {
       console.error(error);

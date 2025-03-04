@@ -2,8 +2,8 @@ import { Types } from 'mongoose'
 
 
 export interface ITransaction {
-    patientId: string; // ID of the patient associated with the transaction
-    encounterUuid: string; // Optional: ID of the encounter (if applicable)
+    patientUPI: string; // ID of the patient associated with the transaction
+    type_uuid: string; // Optional: ID of the encounter (if applicable)
     date: Date; // Date and time of the transaction
     totalAmount: number; // Total amount of the transaction
     paymentStatus: "pending" | "paid" | "failed"; // Payment status
@@ -36,4 +36,5 @@ export interface ITransaction {
     updatedAt?: Date; // Optional: Timestamp for when the transaction was last updated
     sponsor:string;
     sponsor_plan:string;
+    type?:string | null;
   }

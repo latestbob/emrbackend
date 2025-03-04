@@ -20,6 +20,7 @@ import drugsRouter from './routes/drugsRoute';
 import sponsorRouter from './routes/sponsorRoute';
 import serviceRouter from './routes/serviceRoute';
 import encounterRouter from './routes/encounterRoute';
+import transactionRouter from './routes/transactionRoute';
 
 
 
@@ -88,6 +89,7 @@ app.use('/api/service', serviceRouter);
 
 app.use('/api/encounter', encounterRouter);
 
+app.use('/api/transaction', transactionRouter);
 
 // Retrieve the MongoDB URI from environment variables
 const mongodbURI = process.env.MONGO_URI;

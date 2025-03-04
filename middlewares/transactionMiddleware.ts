@@ -7,7 +7,7 @@ import { body, validationResult } from 'express-validator';
 export const validateTransaction = [
 
     
-    body('patientId').isString().notEmpty(),
+    body('patientUPI').isString().notEmpty(),
     body('encounterUuid').optional().isString(),
     body('date').isISO8601().toDate(),
     body('totalAmount').isNumeric(),

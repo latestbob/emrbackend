@@ -30,6 +30,11 @@ body('visit_date').notEmpty().withMessage("visit_date is required"),
     body('is_urgent').isBoolean().withMessage("is_urgent must be a boolean").notEmpty().withMessage("is_urgent is required"),
     body('sponsor').isString().withMessage("sponsor must be a string").notEmpty().withMessage("sponsor is required"),
     body('sponsor_plan').isString().withMessage("sponsor_plan must be a string").notEmpty().withMessage("sponsor_plan is required"),
-    body('scheduled_time').matches(/^([01]\d|2[0-3]):([0-5]\d)|([1-9]|1[0-2]):([0-5]\d)\s?(?:[APap][Mm])$/).withMessage("scheduled_time must be in the format H:MM am/pm i.e 5:00 pm").notEmpty().withMessage("scheduled_time is required")
+    body('scheduled_time').matches(/^([01]\d|2[0-3]):([0-5]\d)|([1-9]|1[0-2]):([0-5]\d)\s?(?:[APap][Mm])$/).withMessage("scheduled_time must be in the format H:MM am/pm i.e 5:00 pm").notEmpty().withMessage("scheduled_time is required"),
+
+    body('biller').isEmail().withMessage("biller must be a valid email").notEmpty().withMessage("biller is required"),
+    body('is_billed').isBoolean().withMessage("is_billed must be a boolean").notEmpty().withMessage("is_billed is required"),
+
+    body('payment_policy').isString().withMessage("payment_policy must be a string").notEmpty().withMessage("payment_policy is required").isIn(['cash', 'claims']).withMessage("payment_policy must be either 'cash' or 'claims'")
 
 ];
