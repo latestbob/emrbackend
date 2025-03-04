@@ -35,4 +35,15 @@ jobs:
             key: ${{ secrets.KEY }}
             script: |
               sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
-    
+              sudo docker stop nelloehrtest || true
+              sudo docker rm nelloehrtest || true
+              sudo docker run -d \
+              --name nelloehrtest \
+              -e MONGO_URI="${{ secrets.MONGO_URI }}" \
+              -e SMTP_HOST="${{ secrets.SMTP_HOST }}" \
+              -e SMTP_USER="${{ secrets.SMTP_USER }}" \
+              -e SMTP_PASS="${{ secrets.SMTP_PASS }}" \
+              -e SMTP_PORT="${{ secrets.SMTP_PORT }}" \
+              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              -p 5000:5000 \
+              ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
