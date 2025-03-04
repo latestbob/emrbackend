@@ -23,5 +23,3 @@ jobs:
         run: |
           docker tag nelloehrtest:latest ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
-
-      
