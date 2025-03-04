@@ -26,3 +26,13 @@ jobs:
         run: |
           docker tag nelloehrtest:latest ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
+
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@master
+        with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USERNAME }}
+            key: ${{ secrets.KEY }}
+            script: |
+              docker pull ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
+    
