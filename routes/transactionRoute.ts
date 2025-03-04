@@ -8,27 +8,36 @@ import isSuperAdmin from '../middlewares/superMiddleware';
 import { createBill, createEncounterTransaction, getAllBillingEncounters } from '../controllers/billingController';
 import isReceptionAdmin from '../middlewares/receptionAdminMiddleware';
 import { validateTransaction } from '../middlewares/transactionMiddleware';
+import { getAllTransactions, getTransactionByPatientUpi, getTransactionByUuid } from '../controllers/transactionController';
 // import { ITransaction } from '../interfaces/ITransaction';
 
 
 
 
 
-const billingRouter = Router();
+const transactionRouter = Router();
 
 
 // register a user
 
-billingRouter.post('/create', isAuthenticated, createBill);
+// billingRouter.post('/create', isAuthenticated, createBill);
 
 //get all appointments
 
-billingRouter.get('/all', isAuthenticated, getAllBillingEncounters);
+transactionRouter.get('/fetch', isAuthenticated, getAllTransactions);
 
-billingRouter.post('/transaction', isAuthenticated, isReceptionAdmin, validateTransaction, createEncounterTransaction);
+//get transaction by type_uuid
+
+transactionRouter.get('/fetch/:type_uuid', isAuthenticated, getTransactionByUuid);
+
+//transactino made by a patient
+
+transactionRouter.get('/patient/:upi', isAuthenticated, getTransactionByPatientUpi);
+
+// billingRouter.post('/transaction', isAuthenticated, isReceptionAdmin, validateTransaction, createEncounterTransaction);
 
 
 
 
 
-export default billingRouter;
+export default transactionRouter;

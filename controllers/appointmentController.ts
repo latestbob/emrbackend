@@ -14,6 +14,9 @@ import { AppointmentInterface } from "../interfaces/appointInterface";
 import userModel from "../models/userModels";
 import { UserInterface } from "../interfaces/userInterface";
 import billingModel from "../models/billingModel";
+import TransactionModel from "../models/transactionModel";
+
+import moment from "moment";
 
 //schedule an appointment
 export async function scheduleAppointment(
@@ -23,6 +26,16 @@ export async function scheduleAppointment(
   // validate input
 
  
+    // validate input
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            "status":"failed",
+            "error":errors.array(),
+        });
+    }
 
 
   const {
@@ -50,7 +63,8 @@ export async function scheduleAppointment(
     vital_pulserate,
     is_billed,
     consultant,
-    biller
+    biller,
+    payment_policy,
     
    
   } = req.body;
@@ -62,13 +76,20 @@ export async function scheduleAppointment(
     // check if office doesn't exist
 
     if (!existedOffice) {
-      return res.status(400).json({
+      return res.status(404).json({
         status: "failed",
-        error: "office does not exists",
+        error: "office does not exist",
       });
     }
 
-  
+    const existedConsultant = await userModel.findOne({uuid : consultant});
+
+    if (!existedConsultant) {
+      return res.status(404).json({
+        status: "failed",
+        error: "consultant not found",
+      });
+    }
 
     const uuid: string = Math.random()
       .toString(16)
@@ -116,28 +137,29 @@ export async function scheduleAppointment(
 
 
     if(is_billed){
-      const newBilling =  new billingModel({
-        patientUPI: upi,
-            encounterId: uuid,
-            dateOfService: visit_date,
-            placeOfService: office,
-            amount: consultantInfo?.fee, 
-            currency: "NGN", 
-            provider: {
-              office_uuid,
-              office: office, 
-            },
-            billing_officer: biller, // Assuming a default billing officer
-            billing_service: "Consultation", // Assuming a default billing service
+     
+
+          const newTransaction = new TransactionModel({
+            patientUPI: upi,
+            type: "appointment",
+            type_uuid: uuid,
+            paymentMethod: payment_policy, // Assuming default payment method
+            date: new Date(),
+            billingOfficer: biller,
+            totalAmount: consultantInfo?.fee || 0, // Assuming consultantInfo has a fee field
+            paymentStatus: "paid",
             sponsor,
             sponsor_plan,
-            status: "pending", // Assuming default status
-      
-          });
-        
-          await newBilling.save();
-    }
+            createdAt: new Date(),
+            month: moment().format("MMMM"),
+            year: moment().format("YYYY"),
 
+
+          });
+
+          await newTransaction.save();
+          
+        }
     
 
     
@@ -147,6 +169,7 @@ export async function scheduleAppointment(
     return res.status(200).json({
       status: "success",
       message: "Appointment scheduled successfully",
+    
     });
   } catch (error) {
     console.error(error);
@@ -157,19 +180,49 @@ export async function scheduleAppointment(
 
 //get all registered appointments
 
+// export async function getAppointments(req: Request<{}, {}>, res: Response) {
+//     try {
+//       const appointment = await appointmentModel.find({});
+  
+//       return res.status(200).json({
+//         status: "success",
+//         appointments: appointment,
+//       });
+//     } catch (error: any) {
+//       console.error(error);
+//     }
+//   }
+  
+
+
 export async function getAppointments(req: Request<{}, {}>, res: Response) {
-    try {
-      const appointment = await appointmentModel.find({});
-  
-      return res.status(200).json({
-        status: "success",
-        appointments: appointment,
-      });
-    } catch (error: any) {
-      console.error(error);
-    }
+  try {
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 6;
+    const skip = (page - 1) * limit;
+
+    const appointment = await appointmentModel.find({}).sort({createdAt : -1 }).skip(skip).limit(limit);
+
+    const totalAppointments = await appointmentModel.countDocuments({});
+    const totalPages = Math.ceil(totalAppointments / limit);
+
+    return res.status(200).json({
+      status: "success",
+      appointments: appointment,
+      totalPages,
+      currentPage: page,
+    });
+
+
+    // const appointment = await appointmentModel.find({});
+
+   
+  } catch (error: any) {
+    console.error(error);
   }
-  
+}
+
 
   //get unique patient by upi
 
@@ -185,7 +238,7 @@ export async function getUniqueAppointment(
       const existed = await appointmentModel.findOne({ uuid });
   
       if (!existed) {
-        return res.status(400).json({
+        return res.status(404).json({
           status: "failed",
           message: "Appointment not found",
         });
@@ -210,18 +263,20 @@ export async function getUniqueAppointment(
     try {
       //
   
-      const existed = await appointmentModel.find({ upi: upi });
+      const existed = await userModel.findOne({ upi: upi });
   
       if (!existed) {
-        return res.status(400).json({
+        return res.status(404).json({
           status: "failed",
-          message: "Appointment not found",
+          message: "user with upi not found",
         });
       }
+
+      const appointments = await appointmentModel.find({ upi: upi });
   
       return res.status(200).json({
         status: "success",
-        appointments: existed,
+        appointments: appointments,
       });
     } catch (error: any) {
       console.error(error);
@@ -278,7 +333,9 @@ export async function updateUniqueAppointent(
     const updatedFields = {
         ...req.body, // Spread all fields from req.body
            // Add the computed fullname
-           consultant:consultantDetails
+          //  consultant:consultantDetails
+           consultant:consultantInfo?.firstname + " " + consultantInfo?.lastname,
+        consultant_uuid:consultant,
       };
   
     const updatedAppointment = await appointmentModel.findOneAndUpdate(
@@ -293,6 +350,36 @@ export async function updateUniqueAppointent(
       appointment: updatedAppointment,
     });
   } catch (error) {
+    console.error(error);
+  }
+}
+
+
+//cancel appointment
+
+export async function cancelAppointment(req: Request<{uuid:string}, {}, {}>, res: Response) {
+
+  const uuid = req.params.uuid;
+
+  try {
+    const appointment = await appointmentModel.findOne({ uuid });
+
+    if (!appointment) {
+      return res.status(404).json({
+        status: "failed",
+        error: "Appointment not found",
+      });
+    }
+
+    appointment.status = "cancelled";
+    await appointment.save();
+   
+
+    return res.status(200).json({
+      status: "success",
+      message: "Appointment cancelled successfully",
+    });
+  } catch (error:any) {
     console.error(error);
   }
 }

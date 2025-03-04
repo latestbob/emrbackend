@@ -32,7 +32,7 @@ sponsorRouter.get('/fetch/:uuid',  isAuthenticated, getUniqueSponsor);
 
 //edit unique sponsor
 
-sponsorRouter.put('/edit/:uuid', validateSponsor, isAuthenticated, updateUniqueSponsor);
+sponsorRouter.put('/edit/:uuid', validateSponsor, isAuthenticated, isAdmin, updateUniqueSponsor);
 
 
 //delete unique sponsor

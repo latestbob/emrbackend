@@ -46,7 +46,7 @@ export async function addNewService(
     // check if sponsor already exists
 
     if (!sponsor) {
-      return res.status(400).json({
+      return res.status(404).json({
         status: "failed",
         error: "Sponsor not found",
       });
@@ -55,7 +55,7 @@ export async function addNewService(
     const plan = await sponsorplanModel.findOne({ plan_code });
 
     if (!plan) {
-        return res.status(400).json({
+        return res.status(404).json({
           status: "failed",
           error: "Sponsor plan not found",
         });
@@ -121,6 +121,12 @@ export async function fetchAllService(req: Request<{}, {}>, res: Response) {
 
 
 
+    if(type !== "Pathology Investigations" && type !== "Imaging Investigation" && type !== "Service"){
+      return res.status(400).json({
+        status: "failed",
+        error: "type must be Pathology Investigations, Imaging Investigation or Service",
+      });
+    } 
     
 
     try {
@@ -291,7 +297,7 @@ export async function fetchIvestigationByPlan(
       if (!existed) {
       return res.status(400).json({
           status: "failed",
-          error: "Sponsor plan does not exists",
+          error: "Sponsor plan does not  exist",
       });
       }
 
@@ -325,7 +331,7 @@ export async function fetchIvestigationByPlan(
         if (!existed) {
         return res.status(400).json({
             status: "failed",
-            error: "Sponsor plan does not exists",
+            error: "Sponsor plan does not exist",
         });
         }
   
@@ -359,7 +365,7 @@ export async function fetchIvestigationByPlan(
           if (!existed) {
           return res.status(400).json({
               status: "failed",
-              error: "Sponsor plan does not exists",
+              error: "Sponsor plan does not exist",
           });
           }
     

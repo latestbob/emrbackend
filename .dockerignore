@@ -1,0 +1,40 @@
+# Ignore node_modules (will be installed during the build)
+node_modules/
+
+# Ignore local environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignore build artifacts
+dist/
+build/
+
+# Ignore npm debug logs
+npm-debug.log
+
+# Ignore Docker-related files (if any)
+Dockerfile
+.dockerignore
+
+# Ignore version control files
+.git/
+.gitignore
+
+# Ignore IDE and editor-specific files
+.vscode/
+.idea/
+
+# Ignore TypeScript build cache
+.tsbuildinfo
+
+# Ignore test and coverage files
+coverage/
+__tests__/
+*.spec.ts
+*.test.ts
+
+# Ignore local development files
+tmp/
+temp/

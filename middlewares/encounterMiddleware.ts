@@ -25,6 +25,7 @@ body('payment_policy').isIn(['cash', 'claims']).withMessage('Payment policy must
     body('investigations').optional().isArray().withMessage('Investigations must be an array'),
     body('imaging').optional().isArray().withMessage('Imaging must be an array'),
     body('otherservices').optional().isArray().withMessage('Other services must be an array'),
+    body('appointment_uuid').notEmpty().withMessage('appointment_uuid must not be empty'),
 
 
 
@@ -40,3 +41,32 @@ body('payment_policy').isIn(['cash', 'claims']).withMessage('Payment policy must
 
    
 ];
+
+
+
+export const validateUpdateEncounter = [
+
+
+  
+        
+     
+     
+        body('comment').optional().isString().withMessage('Comment must be a string'),
+        body('vitals').isObject().withMessage('Vitals must be an object'),
+        body('allergies').isObject().withMessage('Allergies must be an object'),
+        body('symptoms').optional().isArray().withMessage('Symptoms must be an array'),
+        body('family_history').optional().isArray().withMessage('Family history must be an array'),
+        body('social_history').optional().isArray().withMessage('Social history must be an array'),
+        body('diagnosis').optional().isArray().withMessage('Diagnosis must be an array'),
+        body('investigations').optional().isArray().withMessage('Investigations must be an array'),
+        body('imaging').optional().isArray().withMessage('Imaging must be an array'),
+        body('otherservices').optional().isArray().withMessage('Other services must be an array'),
+     
+    
+    
+    
+        
+    
+    
+       
+    ];

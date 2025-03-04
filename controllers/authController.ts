@@ -47,6 +47,19 @@ export async function registerUser(req:Request<{}, {}, UserInterface>, res:Respo
             });
         }
 
+      //Super Admin, Administrator, Receptionist, Accountant, Billing and Accounts Staff, IT Support
+
+      if (role && !["Super Admin", "Administrator", "Receptionist", "Accountant", "Billing and Accounts Staff", "IT Support"].includes(role)) {
+        if (!fee || !aos) {
+          return res.status(400).json({
+            status: "failed",
+            error: "both fee  and aos are required for clinical staff"
+          });
+        }
+      }
+
+     
+
         const hashedPassword = await bcrypt.hash(password,10);
 
         const uuid:string =  Math.random().toString(36).substring(2, 8).toLowerCase();
@@ -94,9 +107,9 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
 
         const user = await userModel.findOne({email});
         if(!user){
-            return res.status(400).json({
+            return res.status(404).json({
                 status:"failed",
-                error:"user with email not found",
+                error:"User not found",
             });
         }
 
@@ -104,9 +117,9 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
 
         const isMatched = await bcrypt.compare(password, user.password);
         if(!isMatched){
-            return res.status(400).json({
+            return res.status(404).json({
                 status:"failed",
-                error:"Invalid credentials",
+                error:"User not found",
             });
         }
 
@@ -114,11 +127,16 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
         const token = jwt.sign({ email: user.email, role: user.role }, process.env.JWT_SECRET as string, { expiresIn: '8h' });
 
        
+        // Hide user password
+        const userWithoutPassword = {
+          ...user.toObject(),
+          password: null
+        };
 
 
         return res.status(200).json({
             status:"success",
-           user:user,
+           user:userWithoutPassword,
            token:token,
         });
 
@@ -441,6 +459,8 @@ export async function forgotPass(req:Request<{}, {}>, res:Response){
       return res.status(200).json({
         status: "success",
         message: "Password reset email sent. Please check your inbox.",
+        resetToken: resetToken,
+
       });
    
 
@@ -455,6 +475,16 @@ export async function forgotPass(req:Request<{}, {}>, res:Response){
 
 
 export async function verifyToken(req:Request<{}, {}>, res:Response){
+
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()){
+        return res.status(400).json({
+            status:"failed",
+            error:errors.array(),
+        });
+  }
+
 
     const {token} = req.body;
 
@@ -479,7 +509,7 @@ export async function verifyToken(req:Request<{}, {}>, res:Response){
 
 //reset password
 
-export async function resetPass(req:Request<{}, {}, UserInterface>, res:Response){
+export async function resetPass(req:Request<{}, {}>, res:Response){
 
 
     // validate input
@@ -493,7 +523,7 @@ export async function resetPass(req:Request<{}, {}, UserInterface>, res:Response
         });
     }
         
-      const { email, password} = req.body;
+      const { email, password, token} = req.body;
     try {
         const user = await userModel.findOne({email});
 
@@ -504,7 +534,7 @@ export async function resetPass(req:Request<{}, {}, UserInterface>, res:Response
             });
         }
 
-        
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
 
         const hashedPassword = await bcrypt.hash(password,10);
 
@@ -521,8 +551,9 @@ export async function resetPass(req:Request<{}, {}, UserInterface>, res:Response
         });
 
 
-    } catch (error) {
-        console.error(error);
+    } catch (error:any) {
+      console.error("Token validation error:", error.message);
+      return res.status(400).json({ valid: false, error: "Invalid or expired token" });
     }
 
 }

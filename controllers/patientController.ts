@@ -64,14 +64,21 @@ export async function registerPatient(
       });
     }
 
-    const existedOffice = await officeModel.find({ uuid: office_uuid });
+   
+
+
 
     // check if office doesn't exist
 
+    const existedOffice = await officeModel.findOne({
+      uuid: office_uuid,
+      name: office,
+    });
+    
     if (!existedOffice) {
-      return res.status(400).json({
+      return res.status(404).json({
         status: "failed",
-        error: "office does not exists",
+        error: "Office with the provided office_uuid and office not found",
       });
     }
 
@@ -161,7 +168,7 @@ export async function getUniquePatient(
     const existed = await patientModel.findOne({ upi });
 
     if (!existed) {
-      return res.status(400).json({
+      return res.status(404).json({
         status: "failed",
         message: "Patient not found",
       });
@@ -183,7 +190,18 @@ export async function updateUniquePatient(
   res: Response
 ) {
 
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      status: "failed",
+      error: errors.array(),
+    });
+  }
+
  const upi = req.params.upi;
+
+ 
 
   const {
     title,

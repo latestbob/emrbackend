@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { createDepartment , getDepartments, updateDepartment, deleteDepartment} from '../controllers/departmentController';
 import { validateDepartment, updateMiddleware } from '../middlewares/validaeDepartments';
+import isAuthenticated from '../middlewares/authenticated';
+import isAdmin from '../middlewares/adminMiddleware';
 
 
 
@@ -9,11 +11,11 @@ const departRouter = Router ();
 
 //create department
 
-departRouter.post('/create', validateDepartment, createDepartment); //sudo admin
+departRouter.post('/create', validateDepartment, isAuthenticated, isAdmin, createDepartment); //sudo admin
 
 //get departments in an office
 
-departRouter.get('/office/:uuid', getDepartments); 
+departRouter.get('/office/:uuid',isAuthenticated, getDepartments); 
 
 //update department   //sudo admin
 
