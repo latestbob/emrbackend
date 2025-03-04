@@ -34,5 +34,5 @@ jobs:
             username: ${{ secrets.EC2_USERNAME }}
             key: ${{ secrets.KEY }}
             script: |
-              docker pull ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
+              sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
     
