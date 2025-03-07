@@ -17,6 +17,7 @@ import billingModel from "../models/billingModel";
 import TransactionModel from "../models/transactionModel";
 
 import moment from "moment";
+import patientModel from "../models/patientModel";
 
 //schedule an appointment
 export async function scheduleAppointment(
@@ -263,7 +264,7 @@ export async function getUniqueAppointment(
     try {
       //
   
-      const existed = await userModel.findOne({ upi: upi });
+      const existed = await patientModel.findOne({ upi: upi });
   
       if (!existed) {
         return res.status(404).json({

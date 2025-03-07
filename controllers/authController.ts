@@ -53,7 +53,7 @@ export async function registerUser(req:Request<{}, {}, UserInterface>, res:Respo
         if (!fee || !aos) {
           return res.status(400).json({
             status: "failed",
-            error: "both fee  and aos are required for clinical staff"
+            error: "Both fee and aos are required for clinical staff"
           });
         }
       }
@@ -108,7 +108,7 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
         const user = await userModel.findOne({email});
         if(!user){
             return res.status(404).json({
-                status:"failed",
+                status:"Failed",
                 error:"User not found",
             });
         }
@@ -118,7 +118,7 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
         const isMatched = await bcrypt.compare(password, user.password);
         if(!isMatched){
             return res.status(404).json({
-                status:"failed",
+                status:"Failed",
                 error:"User not found",
             });
         }

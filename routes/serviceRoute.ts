@@ -7,6 +7,7 @@ import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
 import { addNewService, fetchAllService, fetchImagingByPlan, fetchIvestigationByPlan, fetchOtherServiceByPlan, fetchServiceByType } from '../controllers/serviceController';
 import { validateService } from '../middlewares/serviceMiddleware';
+import isReceptionAdmin from '../middlewares/receptionAdminMiddleware';
 
 
 
@@ -18,7 +19,7 @@ const serviceRouter = Router();
 
 // add new diagnosis
 
-serviceRouter.post('/addservice', validateService, isAuthenticated, addNewService);
+serviceRouter.post('/addservice', validateService, isAuthenticated, isReceptionAdmin, addNewService);
 
 //get all service
 

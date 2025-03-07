@@ -48,13 +48,24 @@ export async function addEncounter(
     const patientExists = await patientModel.findById(patient);
 
     if (!patientExists) {
-        return res.status(400).json({
+        return res.status(404).json({
             status: "failed",
-            error: "Patient does not exist",
+            error: "Patient not found",
         });
     }
 
-    // check if diagnosis already exists
+    // check if appointment exists
+
+    const appointmentExists = await appointmentModel.findOne({uuid:appointment_uuid});
+
+    if (!appointmentExists) {
+        return res.status(404).json({
+            status: "failed",
+            error: "appointment not found",
+        });
+    }
+
+
 
     const request_date = new Date();
 
