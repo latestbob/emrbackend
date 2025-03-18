@@ -36,14 +36,14 @@ app.use(express.json());
 
 
 
-// app.use(cors({
-//     origin: ["https://nelloehr.onrender.com", "*"], // Allow only your frontend
-//     methods: "GET, POST, PUT, DELETE, OPTIONS",
-//     allowedHeaders: "Content-Type, Authorization",
-//     credentials: true // Allow cookies if needed
-// }));
+app.use(cors({
+    origin: ["https://nelloehr.onrender.com", "*"], // Allow only your frontend
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
+    allowedHeaders: "Content-Type, Authorization",
+    credentials: true // Allow cookies if needed
+}));
 
-app.use(cors()); 
+// app.use(cors()); 
 
 
 
