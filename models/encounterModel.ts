@@ -29,12 +29,14 @@ interface DiagnosisType {
     name: string;
    amount: number;
    billing_status?: string | null;
+   has_result?:string | null;
   };
 
   interface ImagingType {
     name: string;
    amount: number;
    billing_status?: string | null;
+   has_result?:string | null;
   };
 
 
@@ -42,6 +44,7 @@ interface DiagnosisType {
     name: string;
    amount: number;
    billing_status?: string | null;
+   has_result?:string | null;
   };
 
 
@@ -80,6 +83,7 @@ interface IEncounter extends Document {
 
     outcome?: string | null;
     appointment_uuid?: string | null;
+    results?:string | null;
 
 
 
@@ -192,6 +196,10 @@ const EncounterSchema = new Schema<IEncounter>({
                 type: String,
                 default: null,
             },
+            has_result: {
+              type: String,
+              default: null,
+            },
           },
         ],
         default: null,
@@ -205,6 +213,10 @@ const EncounterSchema = new Schema<IEncounter>({
                 type: String,
                 default: null,
             },
+            has_result: {
+              type: String,
+              default: null,
+            },
           },
         ],
         default: null,
@@ -217,6 +229,10 @@ const EncounterSchema = new Schema<IEncounter>({
             billing_status: {
                 type: String,
                 default: null,
+            },
+            has_result: { 
+              type: String,
+              default: null,
             },
           },
         ],
@@ -251,6 +267,12 @@ const EncounterSchema = new Schema<IEncounter>({
         type: String,
         default: null,
       },
+
+      results: {
+        type: String,
+        default: null,
+      },
+
 
  
 

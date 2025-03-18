@@ -31,12 +31,14 @@ interface DiagnosisType {
     name: string;
    amount: number;
    billing_status?: string | null;
+   has_result?:string | null;
   };
 
   interface ImagingType {
     name: string;
    amount: number;
    billing_status?: string | null;
+   has_result?:string | null;
   };
 
 
@@ -44,6 +46,7 @@ interface DiagnosisType {
     name: string;
    amount: number;
    billing_status?: string | null;
+   has_result?:string | null;
   };
 
 
@@ -83,6 +86,7 @@ export interface IEncounter extends Document {
     outcome?: string | null;
 
     appointment_uuid?: string | null;
+    results?:string | null;
 
 
 
