@@ -213,3 +213,89 @@ export async function getEncounterResult(
     }
     }
 
+
+
+    //edit  unique result
+
+    export async function editUniqueResult(
+
+      req: Request<{ id: string }, {}, IAddResult>,
+      res: Response
+      ) {
+
+
+      const id = req.params.id;
+
+  const errors = validationResult(req);
+
+
+   if(!errors.isEmpty()){
+        return res.status(400).json({
+            status:"failed",
+            error: errors.array(),
+        });
+   }
+
+      
+
+
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({
+            status: "failed",
+            error: "Invalid id format",
+          });
+      }
+      const { testType, userType, testDetails, results, uploadedBy } = req.body;
+      
+      try {
+
+        
+        
+        const result = await resultModel.findById(id);
+
+        if(!result){
+            return res.status(404).json({
+                status: "failed",
+                error: "result not found",
+              });
+        }
+
+         //check if test type
+
+         if(testType != result.testType){
+                 return res.status(400).json({
+              status: "failed",
+              error: `${testType} is not associated with this result`,
+            });
+         }
+
+         if(userType != result.userType){
+          return res.status(400).json({
+       status: "failed",
+       error: `${userType} is not associated with this result`,
+     });
+  }
+
+  if(testDetails.testName != result.testDetails.testName){
+    return res.status(400).json({
+ status: "failed",
+ error: `${testDetails.testName} is not associated with this result`,
+});
+}
+
+     
+      
+          //await resultModel.findOneAndUpdate({ uuid }, req.body);
+          await resultModel.findByIdAndUpdate(id, req.body);
+      
+          return res.status(200).json({
+          status: "success",
+          message: "result Updated successfully",
+          });
+      } catch (error: any) {
+          console.error(error);
+      }
+      }
+  
+  
+  

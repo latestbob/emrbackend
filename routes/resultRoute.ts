@@ -11,8 +11,8 @@ import { getAllTransactions, getTransactionByPatientUpi, getTransactionByUuid } 
 
 
 import isLabRadiologist from '../middlewares/labStaffMiddleware';
-import { validateResult } from '../middlewares/resultMiddleware';
-import { addResult, getEncounterResult, getUniqueResult } from '../controllers/resultController';
+import { validateResult, validateResultUpdate } from '../middlewares/resultMiddleware';
+import { addResult, editUniqueResult, getEncounterResult, getUniqueResult } from '../controllers/resultController';
 import isDoctor from '../middlewares/doctorMiddleware';
 
 const resultRouter = Router();
@@ -37,6 +37,7 @@ resultRouter.post('/add-result', isAuthenticated, isLabRadiologist, validateResu
 resultRouter.get('/encounter/:uuid', isAuthenticated, isDoctor, getEncounterResult);
 resultRouter.get('/unique/:id', isAuthenticated, isDoctor, getUniqueResult);
 
+resultRouter.put("/edit/unique/:id", isAuthenticated, isLabRadiologist, validateResultUpdate, editUniqueResult);
 
 
 
