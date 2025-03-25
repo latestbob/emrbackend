@@ -12,8 +12,9 @@ import { getAllTransactions, getTransactionByPatientUpi, getTransactionByUuid } 
 
 import isLabRadiologist from '../middlewares/labStaffMiddleware';
 import { validateResult, validateResultUpdate } from '../middlewares/resultMiddleware';
-import { addResult, editUniqueResult, getEncounterResult, getUniqueResult } from '../controllers/resultController';
+import { addResult, downloadUniqueResultByTestName, editUniqueResult, getEncounterResult, getUniqueResult, getUniqueResultByTestName } from '../controllers/resultController';
 import isDoctor from '../middlewares/doctorMiddleware';
+import isReceptionOnly from '../middlewares/receptionistMiddleware';
 
 const resultRouter = Router();
 
@@ -38,6 +39,12 @@ resultRouter.get('/encounter/:uuid', isAuthenticated, isDoctor, getEncounterResu
 resultRouter.get('/unique/:id', isAuthenticated, isDoctor, getUniqueResult);
 
 resultRouter.put("/edit/unique/:id", isAuthenticated, isLabRadiologist, validateResultUpdate, editUniqueResult);
+
+//get unique result buy encounteruuid and test name
+
+resultRouter.get('/unique/:uuid/:testname', isAuthenticated, isDoctor, getUniqueResultByTestName);
+
+resultRouter.get('/download/:uuid/:testname', isAuthenticated, isReceptionOnly, downloadUniqueResultByTestName)
 
 
 

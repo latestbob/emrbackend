@@ -230,10 +230,12 @@ export async function fetchAllEncounter(req: Request<{}, {}>, res: Response) {
 
   export async function fetchEncountersByBillingStatus(
 
-    req: Request<{ status: string }, {}>,
+    // req: Request<{ status: string }, {}>,
+    req: Request<{ status: string }, {}, {}, { consultant?: string }>,
     res: Response
     ) {
     const status = req.params.status;
+    const consultant = req.query.consultant;
 
     const allowedStatus = ["awaiting billing", "billed", "invoiced"];
 
@@ -246,7 +248,15 @@ export async function fetchAllEncounter(req: Request<{}, {}>, res: Response) {
     }
     
     try {
-        const existed = await encounterModel.find({ status }).populate("patient");
+
+      const filter: any = { status };
+
+      if (consultant) {
+          filter.consultant = consultant; // Add consultant filter if provided
+      }
+
+
+        const existed = await encounterModel.find(filter).populate("patient");
     
       
   
