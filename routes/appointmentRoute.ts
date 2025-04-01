@@ -6,10 +6,11 @@ import { validatePatientRegiseter } from '../middlewares/patientValidate';
 
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
-import { cancelAppointment, getAppointments, getUniqueAppointment, getUniquePatientAppointment, scheduleAppointment, updateUniqueAppointent } from '../controllers/appointmentController';
+import { billAppoinment, cancelAppointment, getAppointments, getUniqueAppointment, getUniquePatientAppointment, scheduleAppointment, updateUniqueAppointent } from '../controllers/appointmentController';
 import { validateAppointment } from '../middlewares/appointmentMiddleware';
 
 import isReceptionAdmin from '../middlewares/receptionAdminMiddleware';
+import isReceptionOnly from '../middlewares/receptionistMiddleware';
 
 const appointmentRouter = Router();
 
@@ -34,6 +35,10 @@ appointmentRouter.put("/unique/:uuid", isAuthenticated, updateUniqueAppointent);
 
 //cancel appointment
 appointmentRouter.put("/cancel/:uuid", isAuthenticated, cancelAppointment);
+
+//bill appointment
+
+appointmentRouter.post("/billing", isAuthenticated, isReceptionOnly, billAppoinment);
 
 
 

@@ -143,7 +143,7 @@ export async function registerPatient(
 
 export async function getPatients(req: Request<{}, {}>, res: Response) {
   try {
-    const patient = await patientModel.find({});
+    const patient = await patientModel.find({}).sort({createdAt : -1 });
 
     return res.status(200).json({
       status: "success",

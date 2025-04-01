@@ -13,12 +13,23 @@ import nodemailer from "nodemailer";
 // update profile
 
 
-export async function updateProfile(req:Request<{},{}, UserInterface>, res:Response){
+export async function updateProfile(req:Request<{uuid:string},{}, UserInterface>, res:Response){
 
 
+    const uuid = req.params.uuid;
     
+//validate input
 
-    const {phone, uuid} = req.body;
+const errors = validationResult(req);
+
+if(!errors.isEmpty()){
+    return res.status(400).json({
+        "status":"failed",
+        "error":errors.array(),
+    });
+}
+    
+const {firstname, lastname, email, phone,  department, dob, gender, address} = req.body;
 
 
     try {
@@ -26,10 +37,20 @@ export async function updateProfile(req:Request<{},{}, UserInterface>, res:Respo
         const existed = await userModel.findOne({uuid});
 
         if(!existed){
-            return res.status(400).json({message:"user not found"});
+            return res.status(404).json({message:"user not found"});
         }
 
+        if(email != existed.email){
+            return res.status(400).json({message:"email not associated with this account"});
+        }
+
+        existed.firstname = firstname;
+        existed.lastname = lastname;
         existed.phone = phone;
+        existed.department = department;
+        existed.dob = dob;
+        existed.address = address;
+        existed.gender = gender;
 
         await existed.save();
 

@@ -256,7 +256,7 @@ export async function fetchAllEncounter(req: Request<{}, {}>, res: Response) {
       }
 
 
-        const existed = await encounterModel.find(filter).populate("patient");
+        const existed = await encounterModel.find(filter).sort({request_date : -1 }).populate("patient");
     
       
   

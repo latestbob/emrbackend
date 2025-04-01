@@ -5,8 +5,8 @@ import isAuthenticated from '../middlewares/authenticated';
 
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
-import { addNewService, fetchAllService, fetchImagingByPlan, fetchIvestigationByPlan, fetchOtherServiceByPlan, fetchServiceByType } from '../controllers/serviceController';
-import { validateService } from '../middlewares/serviceMiddleware';
+import { addNewService, fetchAllService, fetchImagingByPlan, fetchIvestigationByPlan, fetchOtherServiceByPlan, fetchServiceByType, getUniqueServiceByUuid, updateUniqueService } from '../controllers/serviceController';
+import { validateService , validateServiceUpdate} from '../middlewares/serviceMiddleware';
 import isReceptionAdmin from '../middlewares/receptionAdminMiddleware';
 
 
@@ -39,6 +39,13 @@ serviceRouter.get('/imaging/:plan', isAuthenticated, fetchImagingByPlan);
 //get other service by plan_code
 
 serviceRouter.get("/otherservices/:plan", isAuthenticated, fetchOtherServiceByPlan)
+
+//get unique  service by uuid
+
+serviceRouter.get('/unique/:uuid', isAuthenticated, getUniqueServiceByUuid);
+
+//update unique service
+serviceRouter.put('/unique/:uuid', validateServiceUpdate, isAuthenticated, isReceptionAdmin, updateUniqueService);
 
 
 

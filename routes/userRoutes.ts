@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import isAuthenticated from '../middlewares/authenticated';
 import { changePassword, getNonClinicalStaff, getUniqueUser, updateProfile, updateUniqueUser, changeUniquePassword, getClinicalStaff } from '../controllers/userController';
-import { validateChangePassword, validateUpdateStaff } from '../middlewares/userMiddleware';
+import { validateChangePassword, validateUpdateStaff, validateUpdateProfile } from '../middlewares/userMiddleware';
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
 import { validateRegiseter } from '../middlewares/authMiddleware';
@@ -14,7 +14,8 @@ const userRouter = Router();
 
 // user update profile (phone)
 
-userRouter.put('/profile', isAuthenticated, updateProfile);
+userRouter.put('/profile/:uuid', validateUpdateProfile, isAuthenticated, updateProfile);
+
 
 //change password
 userRouter.put('/changepassword', validateChangePassword, isAuthenticated, isAdmin, changePassword);

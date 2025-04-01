@@ -383,3 +383,79 @@ export async function fetchIvestigationByPlan(
       }
     
   
+      //fetch service by uuid
+
+      export async function getUniqueServiceByUuid(
+
+        req: Request<{ uuid: string }, {}>,
+        res: Response
+        ) {
+        const uuid = req.params.uuid;
+        
+        try {
+            const existed = await serviceModel.findOne({ uuid });
+        
+            if (!existed) {
+            return res.status(404).json({
+                status: "failed",
+                error: "service not found",
+            });
+            }
+      
+         
+      
+            return res.status(200).json({
+              status: "success",
+              service: existed,
+            });
+        
+           
+        } catch (error: any) {
+            console.error(error);
+        }
+        }
+      
+    
+
+        //update unique service
+
+        export async function updateUniqueService(
+
+    req: Request<{ uuid: string }, {}, IService>,
+    res: Response
+    ) {
+    const uuid = req.params.uuid;
+
+    const {name, type, price} = req.body;
+
+     // validate input
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      status: "failed",
+      error: errors.array(),
+    });
+  }
+    
+    try {
+        const existed = await serviceModel.findOne({ uuid });
+    
+        if (!existed) {
+        return res.status(404).json({
+            status: "failed",
+            error: "service not found",
+        });
+        }
+    
+        await serviceModel.findOneAndUpdate({ uuid }, req.body);
+    
+        return res.status(200).json({
+        status: "success",
+        message: "service updated successfully",
+        });
+    } catch (error: any) {
+        console.error(error);
+    }
+    }
