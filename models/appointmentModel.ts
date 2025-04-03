@@ -34,6 +34,7 @@ interface IAppointment extends Document {
   consultant?:string | null;
 
   consultant_uuid?:string | null;
+  amount?:number | null;
 
  
 
@@ -200,6 +201,12 @@ email: {
   consultant_uuid: {
     type: String,
     default: null,
+  },
+
+  amount: {
+    type: Number,
+    default: null,
+    required:false
   },
 
   

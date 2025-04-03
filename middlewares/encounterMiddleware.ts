@@ -9,12 +9,11 @@ export const validateEncounter = [
 
 body('payment_policy').isIn(['cash', 'claims']).withMessage('Payment policy must be either cash or claims'),
  
-    body('patient').isMongoId().withMessage('Patient must be an object'),
+    body('patient').isMongoId().withMessage('Invalid patient identifier. Ensure you’re using the correct format.'),
     
  
     body('consultant').isString().withMessage('Consultant must be a string'),
     body('isUrgent').isBoolean().withMessage('IsUrgent must be a boolean'),
-    body('comment').optional().isString().withMessage('Comment must be a string'),
     body('status').optional().isString().withMessage('Status must be a string'),
     body('vitals').isObject().withMessage('Vitals must be an object'),
     body('allergies').isObject().withMessage('Allergies must be an object'),

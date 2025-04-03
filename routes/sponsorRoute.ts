@@ -20,7 +20,7 @@ const sponsorRouter = Router();
 
 // add new sponsor
 
-sponsorRouter.post('/create',validateSponsor, isAuthenticated, addNewSponsor);
+sponsorRouter.post('/create',validateSponsor, isAuthenticated, isAdmin, addNewSponsor);
 
 //get sponsor
 

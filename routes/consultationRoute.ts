@@ -8,6 +8,7 @@ import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
 import { getAppointments, getUniqueAppointment, getUniquePatientAppointment, scheduleAppointment, updateUniqueAppointent } from '../controllers/appointmentController';
 import { getUniqueConsultation } from '../controllers/consultationController';
+import isDoctor from '../middlewares/doctorMiddleware';
 
 const consultationRouter = Router();
 
@@ -21,7 +22,7 @@ const consultationRouter = Router();
 
 
 //get unique appointment by uuid
-consultationRouter.get("/doctor/:consultant_uuid", isAuthenticated, getUniqueConsultation);
+consultationRouter.get("/doctor/:consultant_uuid", isAuthenticated, isDoctor, getUniqueConsultation);
 
 
 export default consultationRouter;

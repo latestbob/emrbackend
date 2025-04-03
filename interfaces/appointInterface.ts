@@ -35,5 +35,7 @@ export interface AppointmentInterface {
     biller?:string | null;
     consultant_uuid?:string | null;
     payment_policy?:string | null;
+    amount?:number | null;
+
     
 }

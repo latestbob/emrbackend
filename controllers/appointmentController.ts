@@ -17,6 +17,7 @@ import billingModel from "../models/billingModel";
 import TransactionModel from "../models/transactionModel";
 
 import moment from "moment";
+import patientModel from "../models/patientModel";
 
 //schedule an appointment
 export async function scheduleAppointment(
@@ -131,35 +132,36 @@ export async function scheduleAppointment(
         purpose,
         consultant:consultantInfo?.firstname + " " + consultantInfo?.lastname,
         consultant_uuid:consultant,
+        amount:consultantInfo?.fee || 0,
     });
 
     await newAppointment.save();
 
 
-    if(is_billed){
+    // if(is_billed){
      
 
-          const newTransaction = new TransactionModel({
-            patientUPI: upi,
-            type: "appointment",
-            type_uuid: uuid,
-            paymentMethod: payment_policy, // Assuming default payment method
-            date: new Date(),
-            billingOfficer: biller,
-            totalAmount: consultantInfo?.fee || 0, // Assuming consultantInfo has a fee field
-            paymentStatus: "paid",
-            sponsor,
-            sponsor_plan,
-            createdAt: new Date(),
-            month: moment().format("MMMM"),
-            year: moment().format("YYYY"),
+    //       const newTransaction = new TransactionModel({
+    //         patientUPI: upi,
+    //         type: "appointment",
+    //         type_uuid: uuid,
+    //         paymentMethod: payment_policy, // Assuming default payment method
+    //         date: new Date(),
+    //         billingOfficer: biller,
+    //         totalAmount: consultantInfo?.fee || 0, // Assuming consultantInfo has a fee field
+    //         paymentStatus: "paid",
+    //         sponsor,
+    //         sponsor_plan,
+    //         createdAt: new Date(),
+    //         month: moment().format("MMMM"),
+    //         year: moment().format("YYYY"),
 
 
-          });
+    //       });
 
-          await newTransaction.save();
+    //       await newTransaction.save();
           
-        }
+    //     }
     
 
     
@@ -263,7 +265,7 @@ export async function getUniqueAppointment(
     try {
       //
   
-      const existed = await userModel.findOne({ upi: upi });
+      const existed = await patientModel.findOne({ upi: upi });
   
       if (!existed) {
         return res.status(404).json({
@@ -383,3 +385,90 @@ export async function cancelAppointment(req: Request<{uuid:string}, {}, {}>, res
     console.error(error);
   }
 }
+
+
+
+// appointment billing
+export async function billAppoinment(
+  req: Request<{}, {}, AppointmentInterface>,
+  res: Response
+) {
+  // validate input
+
+ 
+    // validate input
+
+    // const errors = validationResult(req);
+
+    // if(!errors.isEmpty()){
+    //     return res.status(400).json({
+    //         "status":"failed",
+    //         "error":errors.array(),
+    //     });
+    // }
+
+
+  const {
+   upi,
+   uuid,
+   amount,
+   payment_policy,
+   biller,
+   sponsor,
+   sponsor_plan
+   
+  } = req.body;
+  try {
+   
+
+
+
+
+          const newTransaction = new TransactionModel({
+            patientUPI: upi,
+            type: "appointment",
+            type_uuid: uuid,
+            paymentMethod: payment_policy, // Assuming default payment method
+            date: new Date(),
+            billingOfficer: biller,
+            totalAmount: amount || 0, // Assuming consultantInfo has a fee field
+            paymentStatus: "paid",
+            sponsor,
+            sponsor_plan,
+            createdAt: new Date(),
+            month: moment().format("MMMM"),
+            year: moment().format("YYYY"),
+
+
+          });
+
+          await newTransaction.save();
+          
+    
+
+          const appointment = await appointmentModel.findOne({uuid});
+
+          if(!appointment){
+            return res.status(404).json({
+              status: "failed",
+              error: "appointment not found",
+            });
+          }
+    
+          appointment.is_billed = true;
+          await appointment.save();
+
+    
+
+    //send notification to user
+
+    return res.status(200).json({
+      status: "success",
+      message: "Appointment billed successfully",
+    
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+

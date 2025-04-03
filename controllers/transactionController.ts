@@ -26,7 +26,7 @@ export async function getAllTransactions(req: Request<{}, {}>, res: Response) {
 
     
     try {
-      const transactions = await TransactionModel.find({});
+      const transactions = await TransactionModel.find({}).sort({createdAt : -1 });
   
       return res.status(200).json({
         status: "success",
@@ -105,7 +105,7 @@ export async function getTransactionByPatientUpi(req:Request<{upi:string}>, res:
             });
         }
 
-        const check = await TransactionModel.find({patientUPI : upi});
+        const check = await TransactionModel.find({patientUPI : upi}).sort({createdAt : -1 });
 
        
             

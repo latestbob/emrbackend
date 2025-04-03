@@ -16,3 +16,16 @@ export const validateService = [
 
    
 ];
+
+
+
+export const validateServiceUpdate = [
+   
+    body('type').isString().withMessage('Type must be a string').notEmpty().withMessage("type is required"),
+    body('name').isString().withMessage('Name must be a string').notEmpty().withMessage("type is required"),
+    body('price').isNumeric().withMessage('Price must be a number').notEmpty().withMessage("type is required"),
+   
+
+
+   
+];

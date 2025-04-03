@@ -6,13 +6,14 @@ import { validatePatientRegiseter } from '../middlewares/patientValidate';
 import { deleteUniquePatient, getPatients, getUniquePatient, registerPatient, searchUsers, updateUniquePatient } from '../controllers/patientController';
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
+import isReceptionAdmin from '../middlewares/receptionAdminMiddleware';
 
 const patientRouter = Router();
 
 
 // register a user
 
-patientRouter.post('/register', isAuthenticated, validatePatientRegiseter, registerPatient);
+patientRouter.post('/register', validatePatientRegiseter, isAuthenticated, isReceptionAdmin, registerPatient);
 
 //get all registered patients
 patientRouter.get("/all", isAuthenticated, getPatients);

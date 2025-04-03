@@ -1,0 +1,49 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - feature
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Debug - List files in repository
+        run: ls -la
+
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t nelloehrtest:latest .
+
+      - name: Tag and Push Image to DockerHub
+        run: |
+          docker tag nelloehrtest:latest ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
+
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@master
+        with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USERNAME }}
+            key: ${{ secrets.KEY }}
+            script: |
+              sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest
+              sudo docker stop nelloehrtest || true
+              sudo docker rm nelloehrtest || true
+              sudo docker run -d \
+              --name nelloehrtest \
+              -e MONGO_URI="${{ secrets.MONGO_URI }}" \
+              -e SMTP_HOST="${{ secrets.SMTP_HOST }}" \
+              -e SMTP_USER="${{ secrets.SMTP_USER }}" \
+              -e SMTP_PASS="${{ secrets.SMTP_PASS }}" \
+              -e SMTP_PORT="${{ secrets.SMTP_PORT }}" \
+              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              -p 5000:5000 \
+              ${{ secrets.DOCKER_USERNAME }}/nelloehrtest:latest

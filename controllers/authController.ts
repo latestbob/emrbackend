@@ -53,7 +53,7 @@ export async function registerUser(req:Request<{}, {}, UserInterface>, res:Respo
         if (!fee || !aos) {
           return res.status(400).json({
             status: "failed",
-            error: "both fee  and aos are required for clinical staff"
+            error: "Both fee and aos are required for clinical staff"
           });
         }
       }
@@ -108,7 +108,7 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
         const user = await userModel.findOne({email});
         if(!user){
             return res.status(404).json({
-                status:"failed",
+                status:"Failed",
                 error:"User not found",
             });
         }
@@ -118,7 +118,7 @@ export async function LoginUser(req:Request<{}, {}, UserInterface>, res:Response
         const isMatched = await bcrypt.compare(password, user.password);
         if(!isMatched){
             return res.status(404).json({
-                status:"failed",
+                status:"Failed",
                 error:"User not found",
             });
         }
@@ -210,7 +210,7 @@ export async function forgotPass(req:Request<{}, {}>, res:Response){
         // Set up the email transporter
     const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST, // Mailtrap host
-        port: parseInt(process.env.SMTP_PORT || "2525"), // Mailtrap port
+        port: parseInt(process.env.SMTP_PORT || "587"), // Mailtrap port
         auth: {
           user: process.env.SMTP_USER, // Your Mailtrap username
           pass: process.env.SMTP_PASS, // Your Mailtrap password
@@ -222,7 +222,7 @@ export async function forgotPass(req:Request<{}, {}>, res:Response){
   
       // Send the email
       const mailOptions = {
-        from: "hello@famaemr.com",
+        from: "office@mdamonitor.com",
         to: email,
         subject: "Password Reset Request",
         html: `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
