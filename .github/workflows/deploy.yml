@@ -39,6 +39,7 @@ jobs:
               sudo docker rm nelloehrtest || true
               sudo docker run -d \
               --name nelloehrtest \
+              -e PORT=5000 \
               -e MONGO_URI="${{ secrets.MONGO_URI }}" \
               -e SMTP_HOST="${{ secrets.SMTP_HOST }}" \
               -e SMTP_USER="${{ secrets.SMTP_USER }}" \
