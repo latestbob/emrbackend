@@ -3,7 +3,7 @@ import { Router } from 'express';
 // import { validateRegiseter, validateLogin, validateForgot, validateReset } from '../middlewares/authMiddleware';
 import isAuthenticated from '../middlewares/authenticated';
 import { validatePatientRegiseter } from '../middlewares/patientValidate';
-import { deleteUniquePatient, getPatients, getUniquePatient, registerPatient, searchUsers, updateUniquePatient } from '../controllers/patientController';
+import { deleteUniquePatient, getPaginatedPatients, getPatients, getUniquePatient, registerPatient, searchUsers, updateUniquePatient } from '../controllers/patientController';
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
 import isReceptionAdmin from '../middlewares/receptionAdminMiddleware';
@@ -17,6 +17,9 @@ patientRouter.post('/register', validatePatientRegiseter, isAuthenticated, isRec
 
 //get all registered patients
 patientRouter.get("/all", isAuthenticated, getPatients);
+
+//get paginated patients
+patientRouter.get("/fetch-paginated", isAuthenticated, getPaginatedPatients);
 
 //get unique patient by upi
 patientRouter.get("/unique/:upi", isAuthenticated, getUniquePatient);

@@ -90,7 +90,8 @@ export async function registerPatient(
       .toUpperCase();
     const upi: string = uuid;
 
-    const fullname: string = firstname + " " + lastname + "-" + upi;
+    const fullname: string = `${lastname.toUpperCase()} ${firstname.toUpperCase()} [ ${upi} ]`;
+
 
     const newUser = new patientModel({
       title,
@@ -153,6 +154,38 @@ export async function getPatients(req: Request<{}, {}>, res: Response) {
     console.error(error);
   }
 }
+
+//get paginated patients
+
+export async function getPaginatedPatients(req: Request<{}, {}>, res: Response) {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 50;
+    const skip = (page - 1) * limit;
+
+    const patients = await patientModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalPatients = await patientModel.countDocuments({});
+    const totalPages = Math.ceil(totalPatients / limit);
+
+    return res.status(200).json({
+      status: "success",
+      patients,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch patients" });
+  }
+}
+
+
+
 
 //get unique patient by upi
 

@@ -112,6 +112,33 @@ export async function fetchAllSponsor(req: Request<{}, {}>, res: Response) {
     }
   }
 
+export async function fetchPaginateSponsor(req: Request<{}, {}>, res: Response) {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const sponsors = await sponsorModel.find({})
+      .sort({ createdAt: -1 })  // Optional: sort by latest created
+      .skip(skip)
+      .limit(limit);
+
+    const totalSponsors = await sponsorModel.countDocuments({});
+    const totalPages = Math.ceil(totalSponsors / limit);
+
+    return res.status(200).json({
+      status: "success",
+      sponsors,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ status: "error", message: "Something went wrong." });
+  }
+}
+
+
 
   //get unique sponsor
 

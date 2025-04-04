@@ -45,5 +45,9 @@ export interface PatientInterface {
     dob?: string | null;
     gender?: string | null;
     allergies?: IAllergies;
+    reference_source?: string | null;
+    cash_balance_today?: number | null;
+    insurance_balance_today?: number | null;
+    registered_at?: String | null;
     
 }

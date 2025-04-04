@@ -5,7 +5,7 @@ import isAuthenticated from '../middlewares/authenticated';
 
 import isAdmin from '../middlewares/adminMiddleware';
 import isSuperAdmin from '../middlewares/superMiddleware';
-import { addNewSponsor, createSponsorPlan, deleteUniqueSponsor, fetchAllSponsor, fetchAllSponsorPlans, fetchUniquePlanByName, getUniqueSponsor, updateUniqueSponsor } from '../controllers/sponsorController';
+import { addNewSponsor, createSponsorPlan, deleteUniqueSponsor, fetchAllSponsor, fetchAllSponsorPlans, fetchPaginateSponsor, fetchUniquePlanByName, getUniqueSponsor, updateUniqueSponsor } from '../controllers/sponsorController';
 import { validateSponsor } from '../middlewares/sponsorMiddleware';
 
 
@@ -25,6 +25,9 @@ sponsorRouter.post('/create',validateSponsor, isAuthenticated, isAdmin, addNewSp
 //get sponsor
 
 sponsorRouter.get('/fetch', isAuthenticated, fetchAllSponsor);
+
+//fetch paginate sponsors
+sponsorRouter.get('/fetch-paginated', isAuthenticated, fetchPaginateSponsor);
 
 //get unique sponsor
 
