@@ -46,6 +46,10 @@ interface IPatient extends Document {
   gender?: string | null;
 
   allergies?: IAllergies; 
+  reference_source?: string | null;
+  cash_balance_today?: number | null;
+  insurance_balance_today?: number | null;
+  registered_at?: String | null;
 }
 
 const PatientSchema = new Schema<IPatient>({
@@ -239,8 +243,31 @@ const PatientSchema = new Schema<IPatient>({
       food: { type: [String], default: [] },
       other: { type: [String], default: [] },
     },
-    default: {},
+    default: null,
     required: false // optional in schema (not required to have allergies field)
+  },
+
+  reference_source: {
+    type: String,
+    required: false,
+    default: null,
+  },
+  cash_balance_today: {
+    type: Number,
+    required: false,
+    default: null,
+  },
+
+  insurance_balance_today: {
+    type: Number,
+    required: false,
+    default: null,
+  },
+
+  registered_at: {
+    type: String,
+    required: false,
+    default: null,
   },
 
   createdAt: {
